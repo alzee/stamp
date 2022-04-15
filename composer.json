@@ -14,8 +14,6 @@
         "symfony/runtime": "6.0.*",
         "symfony/yaml": "6.0.*"
     },
-    "require-dev": {
-    },
     "config": {
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
@@ -66,5 +64,8 @@
             "allow-contrib": false,
             "require": "6.0.*"
         }
+    },
+    "require-dev": {
+        "symfony/maker-bundle": "^1.38"
     }
 }
