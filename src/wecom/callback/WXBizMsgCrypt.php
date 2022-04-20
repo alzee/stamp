@@ -13,6 +13,7 @@ use App\wecom\callback\SHA1;
 use App\wecom\callback\ErrorCode;
 use App\wecom\callback\XMLParse;
 use App\wecom\callback\PKCS7Encoder;
+use App\wecom\callback\Prpcrypt;
 
 class WXBizMsgCrypt
 {
