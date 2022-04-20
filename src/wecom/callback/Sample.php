@@ -1,6 +1,6 @@
 <?php
 
-include_once "WXBizMsgCrypt.php";
+use App\wecom\callback\WXBizMsgCrypt;
 
 // 假设企业号在公众平台上设置的参数如下
 $encodingAesKey = "jWmYm7qr5nMoAUwZRjGtBxmz3KA1tkAj3ykkR6q2B2C";

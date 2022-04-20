@@ -1,5 +1,8 @@
 <?php
-include_once "errorCode.php";
+
+namespace App\wecom\callback;
+
+use App\wecom\callback\ErrorCode;
 
 /**
  * XMLParse class

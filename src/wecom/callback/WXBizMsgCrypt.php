@@ -6,11 +6,13 @@
  * @copyright Copyright (c) 1998-2014 Tencent Inc.
  */
 
+namespace App\wecom\callback;
 
-include_once "sha1.php";
-include_once "xmlparse.php";
-include_once "pkcs7Encoder.php";
-include_once "errorCode.php";
+
+use App\wecom\callback\SHA1;
+use App\wecom\callback\ErrorCode;
+use App\wecom\callback\XMLParse;
+use App\wecom\callback\PKCS7Encoder;
 
 class WXBizMsgCrypt
 {

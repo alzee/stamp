@@ -1,5 +1,7 @@
 <?php
 
+namespace App\wecom\callback;
+
 /**
  * error code 说明.
  * <ul>
