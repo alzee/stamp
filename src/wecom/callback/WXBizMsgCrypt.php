@@ -135,7 +135,7 @@ class WXBizMsgCrypt
 	 *
 	 * @return int 成功0，失败返回对应的错误码
 	 */
-	public function DecryptMsg($sMsgSignature, $sTimeStamp = null, $sNonce, $sPostData, &$sMsg)
+	public function DecryptMsg($sMsgSignature, $sNonce, $sPostData, &$sMsg, $sTimeStamp = null)
 	{
 		if (strlen($this->m_sEncodingAesKey) != 43) {
 			return ErrorCode::$IllegalAesKey;
