@@ -48,7 +48,7 @@ class ApiController extends AbstractController
         }
 
         $resp = new Response();
-        $resp->setContent($echostr);
+        $resp->setContent('');
         return $resp;
     }
 }

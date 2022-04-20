@@ -1,5 +1,7 @@
 <?php
 
+return;
+
 use App\wecom\callback\WXBizMsgCrypt;
 
 // 假设企业号在公众平台上设置的参数如下
