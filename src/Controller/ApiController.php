@@ -53,7 +53,6 @@ class ApiController extends AbstractController
             print("ERR: " . $errCode . "\n\n");
         }
 
-        $resp = new Response('');
-        return $resp;
+        return new Response('');
     }
 }
