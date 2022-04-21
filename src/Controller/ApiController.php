@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Serializer\Serializer;
 use App\wecom\callback\WXBizMsgCrypt;
 
 #[Route('/api')]
@@ -36,6 +37,9 @@ class ApiController extends AbstractController
         $logger->debug("**********");
 
         $xml = $request->getContent();
+
+        $serializer = new Serializer($normalizers, $encoders);
+        $data = $serializer->deserialize($xml, Encrypt::class, 'xml');
 
         $token = $_ENV['approval_token'];
         $encodingAesKey = $_ENV['approval_EncodingAESKey'];
