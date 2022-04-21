@@ -35,6 +35,8 @@ class ApiController extends AbstractController
         $logger->debug($echostr);
         $logger->debug("**********");
 
+        $xml = $request->getContent();
+
         $token = $_ENV['approval_token'];
         $encodingAesKey = $_ENV['approval_EncodingAESKey'];
         $corpId = $_ENV['wecom_corpid'];
@@ -47,8 +49,7 @@ class ApiController extends AbstractController
             print("ERR: " . $errCode . "\n\n");
         }
 
-        $resp = new Response();
-        $resp->setContent('');
+        $resp = new Response('');
         return $resp;
     }
 }
