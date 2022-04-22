@@ -19,11 +19,13 @@ class ApiController extends AbstractController
     private $T_FINGERPRINT = '3WK7zYJYf5SyLeiEqedzYYWbwddQMeEi3nwbTujq';
     private $stamp_token;
     private $url;
+    private $client;
 
-    public function __construct()
+    public function __construct(HttpClientInterface $client)
     {
         $this->stamp_token = $_ENV['stamp_token'];
         $this->url = $_ENV['api_url'];
+        $this->client = $client;
     }
 
     #[Route('/', name: 'app_api')]
@@ -81,7 +83,7 @@ class ApiController extends AbstractController
                             break;
                         case "$this->T_FINGERPRINT":
                             $logger->warning("add fingerprint");
-                            // $this->addFingerprint();
+                            $this->addFingerprint(57, $data->ApprovalInfo->Applyer->UserId);
                             break;
                     }
                 }
@@ -112,10 +114,23 @@ class ApiController extends AbstractController
         # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
     }
 
-    public function addFingerprint($uid, $username, $uuid)
+    public function addFingerprint($uid, $username)
     {
+        $headers = ["tToken: $this->stamp_token"];
+        $body = ['userId' => $uid,
+            'username' => $username,
+            'uuid' => $this->uuid
+        ];
         $api = "/finger/add";
-        $username='';
+        $username='u1';
+        $response = $this->client->request(
+            'POST',
+            $this->url,
+            'headers' => $headers,
+            'body' => $body
+        );
+
+        $logger->warning($response->getContent(););
     }
 
     public function delFingerprint($uid, $uuid)
