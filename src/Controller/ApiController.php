@@ -55,8 +55,7 @@ class ApiController extends AbstractController
                 $pc = new Prpcrypt($_ENV['approval_EncodingAESKey']);
                 $arr = $pc->decrypt($str, $_ENV['wecom_corpid']);
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
-                // dump($xml);
-                // dump($data);
+                dump($data);
             }
             echo $str1;
         } else {
