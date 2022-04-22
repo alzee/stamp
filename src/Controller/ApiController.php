@@ -58,7 +58,7 @@ class ApiController extends AbstractController
                 // dump($xml);
                 // dump($data);
             }
-            echo $str;
+            echo $str1;
         } else {
             print("ERR: " . $errCode . "\n\n");
         }
