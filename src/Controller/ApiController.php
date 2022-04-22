@@ -118,8 +118,6 @@ class ApiController extends AbstractController
                 'body' => $body
             ]
         );
-
-        $this->logger->warning($response->getContent());
     }
 
     public function changeMode($mode, $uuid)
@@ -151,8 +149,6 @@ class ApiController extends AbstractController
                 'body' => $body
             ]
         );
-
-        $this->logger->warning($response->getContent());
     }
 
     public function delFingerprint($uid, $uuid)
