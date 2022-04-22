@@ -17,8 +17,14 @@ class ApiController extends AbstractController
     private $uuid = '0X3600303238511239343734';
     private $T_STAMP= 'C4NyFxsNsBuQ5PdsCbaGzYeUQ6u6bT4Teg6BUE1it';
     private $T_FINGERPRINT = '3WK7zYJYf5SyLeiEqedzYYWbwddQMeEi3nwbTujq';
-    private $stamp_token = $_ENV['stamp_token'];
-    private $url = $_ENV['api_url'];
+    private $stamp_token;
+    private $url;
+
+    public function __construct()
+    {
+        $this->stamp_token = $_ENV['stamp_token'];
+        $this->url = $_ENV['api_url'];
+    }
 
     #[Route('/', name: 'app_api')]
     public function index(): Response
