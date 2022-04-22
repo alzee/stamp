@@ -13,6 +13,8 @@ use App\wecom\callback\WXBizMsgCrypt;
 #[Route('/api')]
 class ApiController extends AbstractController
 {
+    private $uuid = '0X3600303238511239343734';
+
     #[Route('/', name: 'app_api')]
     public function index(): Response
     {
@@ -63,5 +65,48 @@ class ApiController extends AbstractController
         }
 
         return new Response('');
+    }
+
+    public function pushApplication($applicationId, $uid)
+    {
+        $api = "application/push";
+        # curl -H "tToken: $token" "$api_url/$api" -d "applicationId=11111&userId=$uid&totalCount=5&needCount5&uuid=$uuid"
+        $totalCount = 5;
+        $needCount5 = 5;
+    }
+
+    public function changeMode($uid)
+    {
+        $api = "device/model";
+        # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid&model=0"
+    }
+
+    public function listFingerprints($uid)
+    {
+        $api = "finger/list";
+        # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
+    }
+
+    public function addFingerprint($uid)
+    {
+        $api = "/finger/add";
+        $username='';
+    }
+
+    public function delFingerprint($uid)
+    {
+        $api = "/finger/del";
+    }
+
+    public function idUse($uid)
+    {
+        $api = "device/idUse";
+        // curl -H "tToken: $token" "$api_url/$api" -d "userId=$uid&username=$uname&uuid=$uuid"
+    }
+
+    public function records()
+    {
+        $api = "record/list";
+        // curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
     }
 }
