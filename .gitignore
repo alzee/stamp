@@ -8,5 +8,3 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-curl.sh
-*.xml
