@@ -42,12 +42,13 @@ class ApiController extends AbstractController
         } else {
             $str = $query->get('echostr');
         }
+        $str1 = '';
         $token = $_ENV['approval_token'];
         $encodingAesKey = $_ENV['approval_EncodingAESKey'];
         $corpId = $_ENV['wecom_corpid'];
 
         $wxcpt = new WXBizMsgCrypt($token, $encodingAesKey, $corpId);
-        $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $str, $str);
+        $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $str, $str1);
         if ($errCode == 0) {
             if ($postData) {
                 $pc = new Prpcrypt($_ENV['approval_EncodingAESKey']);
