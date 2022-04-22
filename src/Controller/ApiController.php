@@ -66,7 +66,7 @@ class ApiController extends AbstractController
                 $pc = new Prpcrypt($_ENV['approval_EncodingAESKey']);
                 $arr = $pc->decrypt($str, $_ENV['wecom_corpid']);
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
-                dump($data);
+                // dump($data);
 
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
                     switch ((string)$data->ApprovalInfo->TemplateId) {
@@ -126,6 +126,7 @@ class ApiController extends AbstractController
             'uuid' => $this->uuid
         ];
         $response = $this->request($api, $body);
+        $content = $response->getContent();
     }
 
     public function delFingerprint($uid)
