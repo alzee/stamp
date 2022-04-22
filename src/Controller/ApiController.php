@@ -48,8 +48,7 @@ class ApiController extends AbstractController
         $postData = $request->getContent();
 
         if ($postData) {
-            $xml = simplexml_load_string($postData, 'SimpleXMLElement', LIBXML_NOCDATA);
-            $str = $xml->Encrypt;
+            $str = simplexml_load_string($postData, 'SimpleXMLElement', LIBXML_NOCDATA)->Encrypt;
             $str1 = '';
         } else {
             $str = $query->get('echostr');
