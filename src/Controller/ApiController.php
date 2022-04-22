@@ -146,6 +146,7 @@ class ApiController extends AbstractController
         // curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
     }
 
+    // Why, 'cause wecom don't have uid, it's UserId is actually fucking username, fuck
     public function getUid()
     {
         return 1;
