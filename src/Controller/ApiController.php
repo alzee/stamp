@@ -132,7 +132,7 @@ class ApiController extends AbstractController
             ]
         );
 
-        $logger->warning($response->getContent(););
+        $logger->warning($response->getContent());
     }
 
     public function delFingerprint($uid, $uuid)
