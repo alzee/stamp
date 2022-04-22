@@ -78,6 +78,7 @@ class ApiController extends AbstractController
                         case "$this->T_FINGERPRINT":
                             $this->logger->warning("add fingerprint");
                             $this->addFingerprint(57, $applicant);
+                            $this->listFingerprints();
                             break;
                     }
                 }
