@@ -150,14 +150,14 @@ class ApiController extends AbstractController
     public function getUid($applicant = null)
     {
         $resp = $this->listFingerprints();
-        $data = json_decode($resp->getContent())->data;
+        $data = json_decode($resp->getContent(), true)['data'];
         dump($data);
         if (isset($applicant)) {
-            $uid = 2;
+            $i = array_search($applicant, array_column($data['list'], 'fingerUsername'));
+            $uid = $data['list'][$i]['fingerUserId'];
         } else {
-            $uid = (int)$data->total + 1;
+            $uid = (int)$data['total'] + 1;
         }
-
         return $uid;
     }
 
