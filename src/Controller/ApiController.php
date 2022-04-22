@@ -32,11 +32,11 @@ class ApiController extends AbstractController
         $msg_signature= $query->get('msg_signature');
         $timestamp = $query->get('timestamp');
         $nonce = $query->get('nonce');
-        $logger->debug("**********");
-        $logger->debug($msg_signature);
-        $logger->debug($timestamp);
-        $logger->debug($nonce);
-        $logger->debug("**********");
+        //$logger->debug("**********");
+        //$logger->debug($msg_signature);
+        //$logger->debug($timestamp);
+        //$logger->debug($nonce);
+        //$logger->debug("**********");
 
         $postData = $request->getContent();
 
@@ -61,7 +61,7 @@ class ApiController extends AbstractController
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 dump($data);
 
-                if ($data->Event == 'sys_approval_change' && $data->ApprovalInfo->StatuChangeEvent == 2) {
+                if ($data->Event == 'sys_approval_change' && $data->ApprovalInfo->StatuChangeEvent == "2") {
                     switch ($data->ApprovalInfo->TemplateId) {
                         case $this->T_STAMP:
                             $logger->warning("use stamp");
