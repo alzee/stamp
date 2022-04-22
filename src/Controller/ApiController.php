@@ -77,8 +77,7 @@ class ApiController extends AbstractController
                             break;
                         case "$this->T_FINGERPRINT":
                             $this->logger->warning("add fingerprint");
-                            $this->addFingerprint(57, $applicant);
-                            $this->listFingerprints();
+                            $this->addFingerprint($this->getUid(), $applicant);
                             break;
                     }
                 }
@@ -116,7 +115,7 @@ class ApiController extends AbstractController
         $body = [
             'uuid' => $this->uuid
         ];
-        $response = $this->request($api, $body);
+        return $this->request($api, $body);
     }
 
     public function addFingerprint($uid, $username)
@@ -148,9 +147,19 @@ class ApiController extends AbstractController
     }
 
     // Why, 'cause wecom don't have uid, it's UserId is actually fucking username, fuck
-    public function getUid()
+    public function getUid($applicant = null)
     {
-        return 1;
+        $resp = $this->listFingerprints();
+        $cont = $resp->getContent();
+        dump($cont);
+        if (isset($applicant)) {
+            $uid = 2;
+        } else {
+            $max = 5;
+            $uid = (int)$max + 1;
+        }
+
+        return $uid;
     }
 
     public function request($api, $body)
