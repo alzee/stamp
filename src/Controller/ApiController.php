@@ -98,34 +98,52 @@ class ApiController extends AbstractController
 
     public function pushApplication($applicationId, $uid, $totalCount = 5, $needCount=5, $uuid)
     {
-        $api = "application/push";
+        $api = "/application/push";
         # curl -H "tToken: $token" "$api_url/$api" -d "applicationId=11111&userId=$uid&totalCount=5&needCount=5&uuid=$uuid"
+        $headers = ["tToken: $this->stamp_token"];
+        $body = [
+            'applicationId' => $applicationId,
+            'userId' => $uid,
+            'totalCount' => $totalCount,
+            'needCount' => $needCount,
+            'uuid' => $this->uuid
+        ];
+        $response = $this->client->request(
+            'POST',
+            $this->url . $api,
+            [
+                'headers' => $headers,
+                'body' => $body
+            ]
+        );
+
+        $logger->warning($response->getContent());
     }
 
     public function changeMode($mode, $uuid)
     {
-        $api = "device/model";
+        $api = "/device/model";
         # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid&model=0"
     }
 
     public function listFingerprints($uuid)
     {
-        $api = "finger/list";
+        $api = "/finger/list";
         # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
     }
 
     public function addFingerprint($uid, $username)
     {
+        $api = "/finger/add";
         $headers = ["tToken: $this->stamp_token"];
-        $body = ['userId' => $uid,
+        $body = [
+            'userId' => $uid,
             'username' => $username,
             'uuid' => $this->uuid
         ];
-        $api = "/finger/add";
-        $username='u1';
         $response = $this->client->request(
             'POST',
-            $this->url,
+            $this->url . $api,
             [
                 'headers' => $headers,
                 'body' => $body
@@ -142,13 +160,13 @@ class ApiController extends AbstractController
 
     public function idUse($uid, $username, $uuid)
     {
-        $api = "device/idUse";
+        $api = "/device/idUse";
         // curl -H "tToken: $token" "$api_url/$api" -d "userId=$uid&username=$uname&uuid=$uuid"
     }
 
     public function records($uuid)
     {
-        $api = "record/list";
+        $api = "/record/list";
         // curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
     }
 }
