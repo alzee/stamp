@@ -94,42 +94,42 @@ class ApiController extends AbstractController
         return new Response('');
     }
 
-    public function pushApplication($applicationId, $uid, $totalCount = 5, $needCount=5, $uuid = $this->uuid)
+    public function pushApplication($applicationId, $uid, $totalCount = 5, $needCount=5, $uuid)
     {
         $api = "application/push";
         # curl -H "tToken: $token" "$api_url/$api" -d "applicationId=11111&userId=$uid&totalCount=5&needCount=5&uuid=$uuid"
     }
 
-    public function changeMode($mode, $uuid = $this->uuid)
+    public function changeMode($mode, $uuid)
     {
         $api = "device/model";
         # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid&model=0"
     }
 
-    public function listFingerprints($uuid = $this->uuid)
+    public function listFingerprints($uuid)
     {
         $api = "finger/list";
         # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
     }
 
-    public function addFingerprint($uid, $username, $uuid = $this->uuid)
+    public function addFingerprint($uid, $username, $uuid)
     {
         $api = "/finger/add";
         $username='';
     }
 
-    public function delFingerprint($uid, $uuid = $this->uuid)
+    public function delFingerprint($uid, $uuid)
     {
         $api = "/finger/del";
     }
 
-    public function idUse($uid, $username, $uuid = $this->uuid)
+    public function idUse($uid, $username, $uuid)
     {
         $api = "device/idUse";
         // curl -H "tToken: $token" "$api_url/$api" -d "userId=$uid&username=$uname&uuid=$uuid"
     }
 
-    public function records($uuid = $this->uuid)
+    public function records($uuid)
     {
         $api = "record/list";
         // curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
