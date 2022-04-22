@@ -20,12 +20,14 @@ class ApiController extends AbstractController
     private $stamp_token;
     private $url;
     private $client;
+    private $logger;
 
-    public function __construct(HttpClientInterface $client)
+    public function __construct(HttpClientInterface $client, LoggerInterface $logger)
     {
         $this->stamp_token = $_ENV['stamp_token'];
         $this->url = $_ENV['api_url'];
         $this->client = $client;
+        $this->logger = $logger;
     }
 
     #[Route('/', name: 'app_api')]
@@ -37,7 +39,7 @@ class ApiController extends AbstractController
     }
 
     #[Route('/wecom', name: 'app_wecom')]
-    public function wecom(Request $request, LoggerInterface $logger): Response
+    public function wecom(Request $request): Response
     {
         $query = $request->query;
         $msg_signature= $query->get('msg_signature');
@@ -78,11 +80,11 @@ class ApiController extends AbstractController
                     //dump($data->ApprovalInfo->TemplateId);
                     switch ($data->ApprovalInfo->TemplateId) {
                         case "$this->T_STAMP":
-                            $logger->warning("use stamp");
+                            $this->logger->warning("use stamp");
                             // $this->pushApplication();
                             break;
                         case "$this->T_FINGERPRINT":
-                            $logger->warning("add fingerprint");
+                            $this->logger->warning("add fingerprint");
                             $this->addFingerprint(57, $data->ApprovalInfo->Applyer->UserId);
                             break;
                     }
@@ -117,7 +119,7 @@ class ApiController extends AbstractController
             ]
         );
 
-        $logger->warning($response->getContent());
+        $this->logger->warning($response->getContent());
     }
 
     public function changeMode($mode, $uuid)
@@ -150,7 +152,7 @@ class ApiController extends AbstractController
             ]
         );
 
-        $logger->warning($response->getContent());
+        $this->logger->warning($response->getContent());
     }
 
     public function delFingerprint($uid, $uuid)
