@@ -151,7 +151,7 @@ class ApiController extends AbstractController
     {
         $resp = $this->listFingerprints();
         $data = json_decode($resp->getContent(), true)['data'];
-        dump($data);
+        // dump($data);
         if (isset($applicant)) {
             $i = array_search($applicant, array_column($data['list'], 'fingerUsername'));
             $uid = $data['list'][$i]['fingerUserId'];
