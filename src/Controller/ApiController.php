@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\wecom\callback\Prpcrypt;
 use App\wecom\callback\WXBizMsgCrypt;
 
@@ -16,6 +17,8 @@ class ApiController extends AbstractController
     private $uuid = '0X3600303238511239343734';
     private $T_STAMP= 'C4NyFxsNsBuQ5PdsCbaGzYeUQ6u6bT4Teg6BUE1it';
     private $T_FINGERPRINT = '3WK7zYJYf5SyLeiEqedzYYWbwddQMeEi3nwbTujq';
+    private $stamp_token = $_ENV['stamp_token'];
+    private $url = $_ENV['api_url'];
 
     #[Route('/', name: 'app_api')]
     public function index(): Response
@@ -48,11 +51,11 @@ class ApiController extends AbstractController
             $str = $query->get('echostr');
             $str1 = $str;
         }
-        $token = $_ENV['approval_token'];
+        $approval_token = $_ENV['approval_token'];
         $encodingAesKey = $_ENV['approval_EncodingAESKey'];
         $corpId = $_ENV['wecom_corpid'];
 
-        $wxcpt = new WXBizMsgCrypt($token, $encodingAesKey, $corpId);
+        $wxcpt = new WXBizMsgCrypt($approval_token, $encodingAesKey, $corpId);
         $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $str, $str1);
         if ($errCode == 0) {
             if ($postData) {
@@ -62,15 +65,17 @@ class ApiController extends AbstractController
                 dump($data);
 
                 if ($data->Event == 'sys_approval_change' && $data->ApprovalInfo->StatuChangeEvent == "2") {
-                    dump($data->Event);
-                    dump($data->ApprovalInfo->StatuChangeEvent);
-                    dump($data->ApprovalInfo->TemplateId);
+                    //dump($data->Event);
+                    //dump($data->ApprovalInfo->StatuChangeEvent);
+                    //dump($data->ApprovalInfo->TemplateId);
                     switch ($data->ApprovalInfo->TemplateId) {
                         case "$this->T_STAMP":
                             $logger->warning("use stamp");
+                            $this->pushApplication();
                             break;
                         case "$this->T_FINGERPRINT":
                             $logger->warning("add fingerprint");
+                            $this->addFingerprint($);
                             break;
                     }
                 }
@@ -83,44 +88,42 @@ class ApiController extends AbstractController
         return new Response('');
     }
 
-    public function pushApplication($applicationId, $uid)
+    public function pushApplication($applicationId, $uid, $totalCount = 5, $needCount=5, $uuid = $this->uuid)
     {
         $api = "application/push";
-        # curl -H "tToken: $token" "$api_url/$api" -d "applicationId=11111&userId=$uid&totalCount=5&needCount5&uuid=$uuid"
-        $totalCount = 5;
-        $needCount5 = 5;
+        # curl -H "tToken: $token" "$api_url/$api" -d "applicationId=11111&userId=$uid&totalCount=5&needCount=5&uuid=$uuid"
     }
 
-    public function changeMode($uid)
+    public function changeMode($mode, $uuid = $this->uuid)
     {
         $api = "device/model";
         # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid&model=0"
     }
 
-    public function listFingerprints($uid)
+    public function listFingerprints($uuid = $this->uuid)
     {
         $api = "finger/list";
         # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
     }
 
-    public function addFingerprint($uid)
+    public function addFingerprint($uid, $username, $uuid = $this->uuid)
     {
         $api = "/finger/add";
         $username='';
     }
 
-    public function delFingerprint($uid)
+    public function delFingerprint($uid, $uuid = $this->uuid)
     {
         $api = "/finger/del";
     }
 
-    public function idUse($uid)
+    public function idUse($uid, $username, $uuid = $this->uuid)
     {
         $api = "device/idUse";
         // curl -H "tToken: $token" "$api_url/$api" -d "userId=$uid&username=$uname&uuid=$uuid"
     }
 
-    public function records()
+    public function records($uuid = $this->uuid)
     {
         $api = "record/list";
         // curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
