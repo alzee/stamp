@@ -63,10 +63,10 @@ class ApiController extends AbstractController
 
                 if ($data->Event == 'sys_approval_change' && $data->ApprovalInfo->StatuChangeEvent == 2) {
                     switch ($data->ApprovalInfo->TemplateId) {
-                        case $T_STAMP:
+                        case $this->T_STAMP:
                             $logger->warning("use stamp");
                             break;
-                        case $T_FINGERPRINT:
+                        case $this->T_FINGERPRINT:
                             $logger->warning("add fingerprint");
                             break;
                     }
