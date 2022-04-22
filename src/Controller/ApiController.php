@@ -66,10 +66,10 @@ class ApiController extends AbstractController
                     dump($data->ApprovalInfo->StatuChangeEvent);
                     dump($data->ApprovalInfo->TemplateId);
                     switch ($data->ApprovalInfo->TemplateId) {
-                        case $this->T_STAMP:
+                        case "$this->T_STAMP":
                             $logger->warning("use stamp");
                             break;
-                        case $this->T_FINGERPRINT:
+                        case "$this->T_FINGERPRINT":
                             $logger->warning("add fingerprint");
                             break;
                     }
