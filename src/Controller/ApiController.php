@@ -60,6 +60,8 @@ class ApiController extends AbstractController
                 $arr = $pc->decrypt($str, $_ENV['wecom_corpid']);
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 dump($data);
+                dump($data->Event);
+                dump($data->ApprovalInfo->StatuChangeEvent);
 
                 if ($data->Event == 'sys_approval_change' && $data->ApprovalInfo->StatuChangeEvent == "2") {
                     switch ($data->ApprovalInfo->TemplateId) {
