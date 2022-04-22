@@ -91,7 +91,7 @@ class ApiController extends AbstractController
         return new Response('');
     }
 
-    public function pushApplication($applicationId, $uid, $totalCount = 5, $needCount=0)
+    public function pushApplication($applicationId, $uid, $totalCount = 3, $needCount=0)
     {
         $api = "/application/push";
         $body = [
