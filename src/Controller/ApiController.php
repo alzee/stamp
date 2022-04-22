@@ -28,31 +28,35 @@ class ApiController extends AbstractController
         $msg_signature= $query->get('msg_signature');
         $timestamp = $query->get('timestamp');
         $nonce = $query->get('nonce');
-        $echostr = $query->get('echostr');
         $logger->debug("**********");
         $logger->debug($msg_signature);
         $logger->debug($timestamp);
         $logger->debug($nonce);
-        $logger->debug($echostr);
         $logger->debug("**********");
 
+        $postData = $request->getContent();
+
+        if ($postData) {
+            $xml = simplexml_load_string($postData, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $str = $xml->Encrypt;
+        } else {
+            $str = $query->get('echostr');
+        }
         $token = $_ENV['approval_token'];
         $encodingAesKey = $_ENV['approval_EncodingAESKey'];
         $corpId = $_ENV['wecom_corpid'];
 
         $wxcpt = new WXBizMsgCrypt($token, $encodingAesKey, $corpId);
-        $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $echostr, $echostr);
+        $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $str, $str);
         if ($errCode == 0) {
-            $postData = $request->getContent();
             if ($postData) {
-                $xml = simplexml_load_string($postData, 'SimpleXMLElement', LIBXML_NOCDATA);
                 $pc = new Prpcrypt($_ENV['approval_EncodingAESKey']);
-                $arr = $pc->decrypt($xml->Encrypt, $_ENV['wecom_corpid']);
+                $arr = $pc->decrypt($str, $_ENV['wecom_corpid']);
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 // dump($xml);
                 // dump($data);
             }
-            echo $echostr;
+            echo $str;
         } else {
             print("ERR: " . $errCode . "\n\n");
         }
