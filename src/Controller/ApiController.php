@@ -39,10 +39,11 @@ class ApiController extends AbstractController
         if ($postData) {
             $xml = simplexml_load_string($postData, 'SimpleXMLElement', LIBXML_NOCDATA);
             $str = $xml->Encrypt;
+            $str1 = '';
         } else {
             $str = $query->get('echostr');
+            $str1 = $str;
         }
-        $str1 = '';
         $token = $_ENV['approval_token'];
         $encodingAesKey = $_ENV['approval_EncodingAESKey'];
         $corpId = $_ENV['wecom_corpid'];
