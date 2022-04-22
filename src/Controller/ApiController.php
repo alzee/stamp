@@ -60,10 +60,11 @@ class ApiController extends AbstractController
                 $arr = $pc->decrypt($str, $_ENV['wecom_corpid']);
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 dump($data);
-                dump($data->Event);
-                dump($data->ApprovalInfo->StatuChangeEvent);
 
                 if ($data->Event == 'sys_approval_change' && $data->ApprovalInfo->StatuChangeEvent == "2") {
+                    dump($data->Event);
+                    dump($data->ApprovalInfo->StatuChangeEvent);
+                    dump($data->ApprovalInfo->TemplateId);
                     switch ($data->ApprovalInfo->TemplateId) {
                         case $this->T_STAMP:
                             $logger->warning("use stamp");
