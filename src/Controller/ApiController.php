@@ -74,11 +74,11 @@ class ApiController extends AbstractController
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 dump($data);
 
-                if ($data->Event == 'sys_approval_change' && $data->ApprovalInfo->StatuChangeEvent == "2") {
+                if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
                     //dump($data->Event);
                     //dump($data->ApprovalInfo->StatuChangeEvent);
                     //dump($data->ApprovalInfo->TemplateId);
-                    switch ($data->ApprovalInfo->TemplateId) {
+                    switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$this->T_STAMP":
                             $this->logger->warning("use stamp");
                             // $this->pushApplication();
