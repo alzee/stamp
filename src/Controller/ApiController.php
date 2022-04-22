@@ -126,8 +126,10 @@ class ApiController extends AbstractController
         $response = $this->client->request(
             'POST',
             $this->url,
-            'headers' => $headers,
-            'body' => $body
+            [
+                'headers' => $headers,
+                'body' => $body
+            ]
         );
 
         $logger->warning($response->getContent(););
