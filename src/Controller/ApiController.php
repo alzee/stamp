@@ -45,12 +45,6 @@ class ApiController extends AbstractController
         $msg_signature= $query->get('msg_signature');
         $timestamp = $query->get('timestamp');
         $nonce = $query->get('nonce');
-        //$logger->debug("**********");
-        //$logger->debug($msg_signature);
-        //$logger->debug($timestamp);
-        //$logger->debug($nonce);
-        //$logger->debug("**********");
-
         $postData = $request->getContent();
 
         if ($postData) {
@@ -75,13 +69,10 @@ class ApiController extends AbstractController
                 dump($data);
 
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
-                    //dump($data->Event);
-                    //dump($data->ApprovalInfo->StatuChangeEvent);
-                    //dump($data->ApprovalInfo->TemplateId);
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$this->T_STAMP":
                             $this->logger->warning("use stamp");
-                            // $this->pushApplication();
+                            $this->pushApplication((string)$data->ApprovalInfo->SpNo, );
                             break;
                         case "$this->T_FINGERPRINT":
                             $this->logger->warning("add fingerprint");
@@ -98,25 +89,17 @@ class ApiController extends AbstractController
         return new Response('');
     }
 
-    public function pushApplication($applicationId, $uid, $totalCount = 5, $needCount=5)
+    public function pushApplication($applicationId, $uid, $totalCount = 5, $needCount=0)
     {
         $api = "/application/push";
-        $headers = ["tToken: $this->stamp_token"];
         $body = [
             'applicationId' => $applicationId,
             'userId' => $uid,
             'totalCount' => $totalCount,
-            'needCount' => $needCount,
+            // 'needCount' => $needCount,
             'uuid' => $this->uuid
         ];
-        $response = $this->client->request(
-            'POST',
-            $this->url . $api,
-            [
-                'headers' => $headers,
-                'body' => $body
-            ]
-        );
+        $response = $this->request($api, $body);
     }
 
     public function changeMode($mode)
@@ -128,26 +111,21 @@ class ApiController extends AbstractController
     public function listFingerprints()
     {
         $api = "/finger/list";
-        # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
+        $body = [
+            'uuid' => $this->uuid
+        ];
+        $response = $this->request($api, $body);
     }
 
     public function addFingerprint($uid, $username)
     {
         $api = "/finger/add";
-        $headers = ["tToken: $this->stamp_token"];
         $body = [
             'userId' => $uid,
             'username' => $username,
             'uuid' => $this->uuid
         ];
-        $response = $this->client->request(
-            'POST',
-            $this->url . $api,
-            [
-                'headers' => $headers,
-                'body' => $body
-            ]
-        );
+        $response = $this->request($api, $body);
     }
 
     public function delFingerprint($uid)
@@ -165,5 +143,22 @@ class ApiController extends AbstractController
     {
         $api = "/record/list";
         // curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
+    }
+
+    public function getUid()
+    {
+    }
+
+    public function request($api, $body)
+    {
+        $headers = ["tToken: $this->stamp_token"];
+        return $this->client->request(
+            'POST',
+            $this->url . $api,
+            [
+                'headers' => $headers,
+                'body' => $body
+            ]
+        );
     }
 }
