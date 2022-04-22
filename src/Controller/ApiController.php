@@ -42,7 +42,7 @@ class ApiController extends AbstractController
 
         $wxcpt = new WXBizMsgCrypt($token, $encodingAesKey, $corpId);
         $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $echostr, $echostr);
-        if (!$errCode == 0) {
+        if ($errCode == 0) {
             $postData = $request->getContent();
             if ($postData) {
                 $xml = simplexml_load_string($postData, 'SimpleXMLElement', LIBXML_NOCDATA);
