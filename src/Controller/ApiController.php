@@ -126,7 +126,6 @@ class ApiController extends AbstractController
             'uuid' => $this->uuid
         ];
         $response = $this->request($api, $body);
-        $content = $response->getContent();
     }
 
     public function delFingerprint($uid)
@@ -153,7 +152,7 @@ class ApiController extends AbstractController
     public function request($api, $body)
     {
         $headers = ["tToken: $this->stamp_token"];
-        return $this->client->request(
+        $response = $this->client->request(
             'POST',
             $this->url . $api,
             [
@@ -161,5 +160,7 @@ class ApiController extends AbstractController
                 'body' => $body
             ]
         );
+        $content = $response->getContent();
+        return $response;
     }
 }
