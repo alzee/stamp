@@ -1,0 +1,18 @@
+AgentID: 3010040
+ApprovalInfo:
+    SpNo: 
+    SpStatus: 2
+    TemplateId: C4NyFxsNsBuQ5PdsCbaGzYeUQ6u6bT4Teg6BUE1it
+    Event: sys_approval_change
+    Applyer:
+        UserId: 
+    SpRecord:
+        SpStatus:
+        ApproverAttr:
+        Details:
+            Approver:
+                UserId: 
+    StatuChangeEvent: 2
+
+
+# vim:ft=yaml
