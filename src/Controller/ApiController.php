@@ -69,14 +69,15 @@ class ApiController extends AbstractController
                 // dump($data);
 
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
+                    $applicant = (string)$data->ApprovalInfo->Applyer->UserId;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$this->T_STAMP":
                             $this->logger->warning("use stamp");
-                            $this->pushApplication((string)$data->ApprovalInfo->SpNo, );
+                            $this->pushApplication((string)$data->ApprovalInfo->SpNo, $this->getUid($applicant));
                             break;
                         case "$this->T_FINGERPRINT":
                             $this->logger->warning("add fingerprint");
-                            $this->addFingerprint(57, (string)$data->ApprovalInfo->Applyer->UserId);
+                            $this->addFingerprint(57, $applicant);
                             break;
                     }
                 }
@@ -147,6 +148,7 @@ class ApiController extends AbstractController
 
     public function getUid()
     {
+        return 1;
     }
 
     public function request($api, $body)
