@@ -24,7 +24,7 @@ api=finger/add
 # curl -H "tToken: $stamp_token" "$api_url/$api" -d "userId=$uid&username=houfei&uuid=$uuid"
 
 api=application/push
-# curl -H "tToken: $stamp_token" "$api_url/$api" -d "applicationId=104220050&userId=$uid&totalCount=5&needCount=0&uuid=$uuid"
+# curl -H "tToken: $stamp_token" "$api_url/$api" -d "applicationId=2147483647&userId=$uid&totalCount=5&needCount=0&uuid=$uuid"
 
 api=device/idUse
 # curl -H "tToken: $stamp_token" "$api_url/$api" -d "userId=$uid&username=$uname&uuid=$uuid"
