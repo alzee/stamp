@@ -4,7 +4,7 @@
 
 . ./.env.local
 
-# api=auth/tToken
+api=auth/tToken
 # curl -d key=$stamp_app_key -d secret=$stamp_app_secret "$api_url/$api"
 
 # api=device/list
