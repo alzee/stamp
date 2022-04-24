@@ -33,7 +33,7 @@ api=record/list
 # curl -H "tToken: $stamp_token" "$api_url/$api" -d "uuid=$uuid"
 
 api=device/sleep
-# curl -H "tToken: $stamp_token" "$api_url/$api" -d "uuid=$uuid&sleep=30"
+curl -H "tToken: $stamp_token" "$api_url/$api" -d "uuid=$uuid&sleep=30"
 
 api=finger/clear
 # curl -H "tToken: $stamp_token" "$api_url/$api" -d "uuid=$uuid"
