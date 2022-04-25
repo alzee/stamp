@@ -27,6 +27,7 @@ class ApiController extends AbstractController
         $this->stamp_token = $_ENV['stamp_token'];
         $this->logger = $logger;
         $this->stamp = new Qstamp($this->uuid, $this->stamp_token);
+        dump($_SERVER['DOCUMENT_ROOT']);
     }
 
     #[Route('/', name: 'app_api')]
@@ -112,7 +113,6 @@ class ApiController extends AbstractController
     #[Route('/sleep')]
     public function sleepTime(){
         $this->stamp->setSleepTime();
-        dump($_SERVER['DOCUMENT_ROOT']);
         return new Response('<body></body>');
     }
 
