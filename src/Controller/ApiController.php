@@ -197,7 +197,7 @@ class ApiController extends AbstractController
         $data = json_decode($data);
         $uuid = $data->uuid;
         $cmd = $data->cmd;
-        $sleepTime = $data->sleepTime;
+        $sleepTime = $data->data->sleepTime;
         dump($data);
         $msg = match ($cmd) {
             "1000" => $this->setSleepTime($sleepTime),
