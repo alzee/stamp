@@ -109,9 +109,15 @@ class ApiController extends AbstractController
         return $resp;
     }
 
-    #[Route('/test')]
-    public function t(){
+    #[Route('/sleep')]
+    public function sleepTime(){
         $this->stamp->setSleepTime();
         return new Response('<body></body>');
+    }
+
+    #[Route('/token')]
+    public function getToken(){
+        return $this->stamp->getToken($_ENV['stamp_app_key'], $_ENV['stamp_app_secret']);
+        // return new Response('<body></body>');
     }
 }
