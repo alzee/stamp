@@ -129,6 +129,16 @@ class ApiController extends AbstractController
         $response = $this->request($api, $body);
     }
 
+    public function setSleepTime($min = 30)
+    {
+        $api="/device/sleep";
+        $body = [
+            'sleep' => $min,
+            'uuid' => $this->uuid
+        ];
+        $response = $this->request($api, $body);
+    }
+
     public function delFingerprint($uid)
     {
         $api = "/finger/del";
@@ -180,7 +190,18 @@ class ApiController extends AbstractController
     public function qstamp(Request $request): Response
     {
         $data = $request->getContent();
+        $data = stripcslashes($data);
+        $data = stripcslashes($data);
+        $data = str_replace('"{', '{', $data);
+        $data = str_replace('}"', '}', $data);
+        $data = json_decode($data));
+        $uuid = $data->uuid;
+        $cmd = $data->cmd;
+        $sleepTime = $data->sleepTime;
         dump($data);
+        $msg = match ($cmd) {
+            "1000" => $this->setSleepTime($sleepTime),
+        }
         $resp = new Response();
         return $resp;
     }
