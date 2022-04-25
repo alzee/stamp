@@ -194,7 +194,7 @@ class ApiController extends AbstractController
         $data = stripcslashes($data);
         $data = str_replace('"{', '{', $data);
         $data = str_replace('}"', '}', $data);
-        $data = json_decode($data));
+        $data = json_decode($data);
         $uuid = $data->uuid;
         $cmd = $data->cmd;
         $sleepTime = $data->sleepTime;
