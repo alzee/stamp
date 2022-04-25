@@ -50,16 +50,16 @@
         },
         {
             "name": "alzee/qstamp-sdk-php",
-            "version": "0.0.8",
+            "version": "0.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alzee/qstamp-sdk-php.git",
-                "reference": "683f5d54d2a9ec5b2b9155cdbc03c45e90d89fae"
+                "reference": "58ed57427f9139331fd9b549a0ec06cd56f12a08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alzee/qstamp-sdk-php/zipball/683f5d54d2a9ec5b2b9155cdbc03c45e90d89fae",
-                "reference": "683f5d54d2a9ec5b2b9155cdbc03c45e90d89fae",
+                "url": "https://api.github.com/repos/alzee/qstamp-sdk-php/zipball/58ed57427f9139331fd9b549a0ec06cd56f12a08",
+                "reference": "58ed57427f9139331fd9b549a0ec06cd56f12a08",
                 "shasum": ""
             },
             "require": {
@@ -85,9 +85,9 @@
             "description": "qyunxi stamp SDK for php",
             "support": {
                 "issues": "https://github.com/alzee/qstamp-sdk-php/issues",
-                "source": "https://github.com/alzee/qstamp-sdk-php/tree/0.0.8"
+                "source": "https://github.com/alzee/qstamp-sdk-php/tree/0.0.9"
             },
-            "time": "2022-04-25T10:33:59+00:00"
+            "time": "2022-04-25T11:48:57+00:00"
         },
         {
             "name": "doctrine/annotations",
