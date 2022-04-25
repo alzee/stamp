@@ -104,12 +104,6 @@ class ApiController extends AbstractController
         $response = $this->request($api, $body);
     }
 
-    public function changeMode($mode)
-    {
-        $api = "/device/model";
-        # curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid&model=0"
-    }
-
     public function listFingerprints()
     {
         $api = "/finger/list";
@@ -138,23 +132,6 @@ class ApiController extends AbstractController
             'uuid' => $this->uuid
         ];
         $response = $this->request($api, $body);
-    }
-
-    public function delFingerprint($uid)
-    {
-        $api = "/finger/del";
-    }
-
-    public function idUse($uid, $username)
-    {
-        $api = "/device/idUse";
-        // curl -H "tToken: $token" "$api_url/$api" -d "userId=$uid&username=$uname&uuid=$uuid"
-    }
-
-    public function records()
-    {
-        $api = "/record/list";
-        // curl -H "tToken: $token" "$api_url/$api" -d "uuid=$uuid"
     }
 
     // Why, 'cause wecom don't have uid, it's UserId is actually fucking username, fuck
@@ -215,7 +192,8 @@ class ApiController extends AbstractController
     public function t(){
         $stamp = new Qstamp('0X3600303238511239343734', $_ENV['stamp_token']);
 
-        $stamp->records();
-        return new Response();
+        dump($stamp);
+        $stamp->setSleepTime();
+        return new Response('<body></body>');
     }
 }
