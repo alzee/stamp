@@ -19,16 +19,14 @@ class ApiController extends AbstractController
     private $T_STAMP= 'C4NyFxsNsBuQ5PdsCbaGzYeUQ6u6bT4Teg6BUE1it';
     private $T_FINGERPRINT = '3WK7zYJYf5SyLeiEqedzYYWbwddQMeEi3nwbTujq';
     private $stamp_token;
-    private $url;
-    private $client;
     private $logger;
+    private $stamp;
 
-    public function __construct(HttpClientInterface $client, LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger)
     {
         $this->stamp_token = $_ENV['stamp_token'];
-        $this->url = $_ENV['api_url'];
-        $this->client = $client;
         $this->logger = $logger;
+        $this->stamp = new Qstamp($this->uuid, $this->stamp_token);
     }
 
     #[Route('/', name: 'app_api')]
@@ -74,11 +72,11 @@ class ApiController extends AbstractController
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$this->T_STAMP":
                             $this->logger->warning("use stamp");
-                            $this->pushApplication($applicationId, $this->getUid($applicant));
+                            $this->stamp->pushApplication($applicationId, $this->stamp->getUid($applicant));
                             break;
                         case "$this->T_FINGERPRINT":
                             $this->logger->warning("add fingerprint");
-                            $this->addFingerprint($this->getUid(), $applicant);
+                            $this->stamp->addFingerprint($this->stamp->getUid(), $applicant);
                             break;
                     }
                 }
@@ -91,79 +89,6 @@ class ApiController extends AbstractController
         return new Response('');
     }
 
-    public function pushApplication($applicationId, $uid, $totalCount = 3, $needCount=0)
-    {
-        $api = "/application/push";
-        $body = [
-            'applicationId' => $applicationId,
-            'userId' => $uid,
-            'totalCount' => $totalCount,
-            // 'needCount' => $needCount,
-            'uuid' => $this->uuid
-        ];
-        $response = $this->request($api, $body);
-    }
-
-    public function listFingerprints()
-    {
-        $api = "/finger/list";
-        $body = [
-            'uuid' => $this->uuid
-        ];
-        return $this->request($api, $body);
-    }
-
-    public function addFingerprint($uid, $username)
-    {
-        $api = "/finger/add";
-        $body = [
-            'userId' => $uid,
-            'username' => $username,
-            'uuid' => $this->uuid
-        ];
-        $response = $this->request($api, $body);
-    }
-
-    public function setSleepTime($min = 30)
-    {
-        $api="/device/sleep";
-        $body = [
-            'sleep' => $min,
-            'uuid' => $this->uuid
-        ];
-        $response = $this->request($api, $body);
-    }
-
-    // Why, 'cause wecom don't have uid, it's UserId is actually fucking username, fuck
-    public function getUid($applicant = null)
-    {
-        $resp = $this->listFingerprints();
-        $data = json_decode($resp->getContent(), true)['data'];
-        // dump($data);
-        if (isset($applicant)) {
-            $i = array_search($applicant, array_column($data['list'], 'fingerUsername'));
-            $uid = $data['list'][$i]['fingerUserId'];
-        } else {
-            $uid = (int)$data['total'] + 1;
-        }
-        return $uid;
-    }
-
-    public function request($api, $body)
-    {
-        $headers = ["tToken: $this->stamp_token"];
-        $response = $this->client->request(
-            'POST',
-            $this->url . $api,
-            [
-                'headers' => $headers,
-                'body' => $body
-            ]
-        );
-        $content = $response->getContent();
-        return $response;
-    }
-
     #[Route('/qstamp/callback', name: 'app_qstamp_callback')]
     public function qstamp(Request $request): Response
     {
@@ -174,26 +99,19 @@ class ApiController extends AbstractController
         $data = str_replace('}"', '}', $data);
         $data = json_decode($data);
         $uuid = $data->uuid;
-        dump($data);
+        // dump($data);
         $msg = match ($data->cmd) {
-            1000 => $this->setSleepTime($data->data->sleepTime),
-            1130 => $this->uploadPic(),
+            1000 => $this->stamp->setSleepTime($data->data->sleepTime),
+            1130 => $this->stamp->uploadPic(),
             default => true,
         };
         $resp = new Response();
         return $resp;
     }
 
-    public function uploadPic()
-    {
-    }
-
     #[Route('/test')]
     public function t(){
-        $stamp = new Qstamp('0X3600303238511239343734', $_ENV['stamp_token']);
-
-        dump($stamp);
-        $stamp->setSleepTime();
+        $this->stamp->setSleepTime();
         return new Response('<body></body>');
     }
 }
