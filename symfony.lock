@@ -1,4 +1,10 @@
 {
+    "alzee/fwc": {
+        "version": "0.0.1"
+    },
+    "alzee/qstamp-sdk-php": {
+        "version": "0.0.1"
+    },
     "doctrine/annotations": {
         "version": "1.13",
         "recipe": {
