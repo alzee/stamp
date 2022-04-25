@@ -112,6 +112,7 @@ class ApiController extends AbstractController
     #[Route('/sleep')]
     public function sleepTime(){
         $this->stamp->setSleepTime();
+        dump($_SERVER['DOCUMENT_ROOT']);
         return new Response('<body></body>');
     }
 
