@@ -3,6 +3,9 @@
 # vim:ft=sh
 
 . ./.env.local
+uuid=0X3600303238511239343734
+uid=1
+uname=u1
 
 api=auth/tToken
 # curl -d key=$stamp_app_key -d secret=$stamp_app_secret "$QSTAMP_API_URL/$api"
@@ -10,10 +13,6 @@ api=auth/tToken
 
 # api=device/list
 # curl -H "tToken: $stamp_token" "$QSTAMP_API_URL/$api"
-
-uuid=0X3600303238511239343734
-uid=1
-uname=u1
 
 api=finger/list
 # curl -H "tToken: $stamp_token" "$QSTAMP_API_URL/$api" -d "uuid=$uuid"
