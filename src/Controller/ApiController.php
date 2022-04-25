@@ -179,7 +179,8 @@ class ApiController extends AbstractController
     #[Route('/qstamp/callback', name: 'app_qstamp_callback')]
     public function qstamp(Request $request): Response
     {
-        dump($request);
+        $data = $request->getContent();
+        dump($data);
         $resp = new Response();
         return $resp;
     }
