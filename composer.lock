@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4bdc982ceffc909c6656fc474e4c73b0",
+    "content-hash": "fbc9256519b34bdd83843cc389fdddef",
     "packages": [
         {
             "name": "alzee/fwc",
@@ -50,16 +50,16 @@
         },
         {
             "name": "alzee/qstamp-sdk-php",
-            "version": "0.0.1",
+            "version": "0.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alzee/qstamp-sdk-php.git",
-                "reference": "4267026790502c370a68d3d915f323af8ab1e3c8"
+                "reference": "35cd5870947e68113ac8102b66b3206ff2e81389"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alzee/qstamp-sdk-php/zipball/4267026790502c370a68d3d915f323af8ab1e3c8",
-                "reference": "4267026790502c370a68d3d915f323af8ab1e3c8",
+                "url": "https://api.github.com/repos/alzee/qstamp-sdk-php/zipball/35cd5870947e68113ac8102b66b3206ff2e81389",
+                "reference": "35cd5870947e68113ac8102b66b3206ff2e81389",
                 "shasum": ""
             },
             "require": {
@@ -85,9 +85,9 @@
             "description": "qyunxi stamp SDK for php",
             "support": {
                 "issues": "https://github.com/alzee/qstamp-sdk-php/issues",
-                "source": "https://github.com/alzee/qstamp-sdk-php/tree/0.0.1"
+                "source": "https://github.com/alzee/qstamp-sdk-php/tree/0.0.2"
             },
-            "time": "2022-04-25T07:33:08+00:00"
+            "time": "2022-04-25T08:45:02+00:00"
         },
         {
             "name": "doctrine/annotations",
