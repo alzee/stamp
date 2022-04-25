@@ -117,7 +117,8 @@ class ApiController extends AbstractController
 
     #[Route('/token')]
     public function getToken(){
-        return $this->stamp->getToken($_ENV['stamp_app_key'], $_ENV['stamp_app_secret']);
-        // return new Response('<body></body>');
+        $token = $this->stamp->getToken($_ENV['stamp_app_key'], $_ENV['stamp_app_secret']);
+        dump($token);
+        return new Response('<body></body>');
     }
 }
