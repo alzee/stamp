@@ -24,10 +24,10 @@ class ApiController extends AbstractController
 
     public function __construct(LoggerInterface $logger)
     {
+        dump($_SERVER['DOCUMENT_ROOT']);
         $this->stamp_token = $_ENV['stamp_token'];
         $this->logger = $logger;
         $this->stamp = new Qstamp($this->uuid, $this->stamp_token);
-        dump($_SERVER['DOCUMENT_ROOT']);
     }
 
     #[Route('/', name: 'app_api')]
