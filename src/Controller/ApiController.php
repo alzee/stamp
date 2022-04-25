@@ -196,13 +196,17 @@ class ApiController extends AbstractController
         $data = str_replace('}"', '}', $data);
         $data = json_decode($data);
         $uuid = $data->uuid;
-        $cmd = $data->cmd;
-        $sleepTime = $data->data->sleepTime;
         dump($data);
-        $msg = match ($cmd) {
-            1000 => $this->setSleepTime($sleepTime),
+        $msg = match ($data->cmd) {
+            1000 => $this->setSleepTime($data->data->sleepTime),
+            1130 => $this->uploadPic(),
+            default => true,
         };
         $resp = new Response();
         return $resp;
+    }
+
+    public function uploadPic()
+    {
     }
 }
