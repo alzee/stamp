@@ -201,7 +201,7 @@ class ApiController extends AbstractController
         dump($data);
         $msg = match ($cmd) {
             "1000" => $this->setSleepTime($sleepTime),
-        }
+        };
         $resp = new Response();
         return $resp;
     }
