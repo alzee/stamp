@@ -200,7 +200,7 @@ class ApiController extends AbstractController
         $sleepTime = $data->data->sleepTime;
         dump($data);
         $msg = match ($cmd) {
-            "1000" => $this->setSleepTime($sleepTime),
+            1000 => $this->setSleepTime($sleepTime),
         };
         $resp = new Response();
         return $resp;
