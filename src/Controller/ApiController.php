@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\wecom\callback\Prpcrypt;
 use App\wecom\callback\WXBizMsgCrypt;
+use Alzee\Qstamp\Qstamp;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -208,5 +209,13 @@ class ApiController extends AbstractController
 
     public function uploadPic()
     {
+    }
+
+    #[Route('/test')]
+    public function t(){
+        $stamp = new Qstamp('0X3600303238511239343734', $_ENV['stamp_token']);
+
+        $stamp->records();
+        return new Response();
     }
 }
