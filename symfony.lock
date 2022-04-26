@@ -1,4 +1,7 @@
 {
+    "alzee/fwc": {
+        "version": "0.0.2"
+    },
     "alzee/qstamp-sdk-php": {
         "version": "0.0.1"
     },

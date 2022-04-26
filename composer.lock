@@ -4,20 +4,62 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "388540f9994a9fc48aafb238e3a6b2fe",
+    "content-hash": "35f2fb4f16edfcb61e73351aa7b330ac",
     "packages": [
         {
-            "name": "alzee/qstamp-sdk-php",
-            "version": "0.0.9",
+            "name": "alzee/fwc",
+            "version": "0.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alzee/qstamp-sdk-php.git",
-                "reference": "58ed57427f9139331fd9b549a0ec06cd56f12a08"
+                "url": "https://github.com/alzee/fwc.git",
+                "reference": "069b5facfea1564fda132d347ced912c7ddd0c34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alzee/qstamp-sdk-php/zipball/58ed57427f9139331fd9b549a0ec06cd56f12a08",
-                "reference": "58ed57427f9139331fd9b549a0ec06cd56f12a08",
+                "url": "https://api.github.com/repos/alzee/fwc/zipball/069b5facfea1564fda132d347ced912c7ddd0c34",
+                "reference": "069b5facfea1564fda132d347ced912c7ddd0c34",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/dotenv": "6.0.*",
+                "symfony/http-client": "6.0.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Alzee\\Fwc\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Al Zee",
+                    "email": "z@alz.ee"
+                }
+            ],
+            "description": "php sdk for the Fucking WeCom/wework",
+            "homepage": "https://github.com/alzee/fwc",
+            "support": {
+                "issues": "https://github.com/alzee/fwc/issues",
+                "source": "https://github.com/alzee/fwc/tree/0.0.2"
+            },
+            "time": "2022-04-26T03:05:31+00:00"
+        },
+        {
+            "name": "alzee/qstamp-sdk-php",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alzee/qstamp-sdk-php.git",
+                "reference": "9f014de681f1753410f1eb229487846a82baa9fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alzee/qstamp-sdk-php/zipball/9f014de681f1753410f1eb229487846a82baa9fb",
+                "reference": "9f014de681f1753410f1eb229487846a82baa9fb",
                 "shasum": ""
             },
             "require": {
@@ -43,9 +85,9 @@
             "description": "qyunxi stamp SDK for php",
             "support": {
                 "issues": "https://github.com/alzee/qstamp-sdk-php/issues",
-                "source": "https://github.com/alzee/qstamp-sdk-php/tree/0.0.9"
+                "source": "https://github.com/alzee/qstamp-sdk-php/tree/0.1.0"
             },
-            "time": "2022-04-25T11:48:57+00:00"
+            "time": "2022-04-26T03:06:11+00:00"
         },
         {
             "name": "doctrine/annotations",
