@@ -13,6 +13,8 @@ use Alzee\Qstamp\Qstamp;
 use Alzee\Fwc\Fwc;
 use Alzee\Fwc\Contacts;
 use Alzee\Fwc\Approval;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -68,8 +70,8 @@ class ApiController extends AbstractController
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 // dump($data);
 
-                $contacts = new Contacts($_ENV['WECOM_CONTACTS_TOKEN']);
-                $approval = new Approval($_ENV['WECOM_APPROVAL_TOKEN']);
+                $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
+                $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
 
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
                     $applicant = (string)$data->ApprovalInfo->Applyer->UserId;
@@ -119,16 +121,30 @@ class ApiController extends AbstractController
         return $resp;
     }
 
-    #[Route('/sleep')]
-    public function sleepTime(){
-        $this->stamp->setSleepTime();
-        return new Response('<body></body>');
-    }
+    /**
+     * @param string $app 'CONTACTS | APPROVAL'
+     *
+     * @return string
+     *
+     */
+    public function getWecomTokenFromCache($app, $refresh = false)
+    {
+        $cache = new FilesystemAdapter();
 
-    #[Route('/token')]
-    public function getToken(){
-        $token = $this->stamp->getToken($_ENV['stamp_app_key'], $_ENV['stamp_app_secret']);
-        return new Response('<body></body>');
+        if ($refresh) {
+            $cache->clear("WECOM_${app}_TOKEN");
+        }
+
+        $token = $cache->get("WECOM_${app}_TOKEN", function (ItemInterface $item) use ($app) {
+            $item->expiresAfter(7200);
+
+            $fwc = new Fwc();
+            $corpId = $_ENV['wecom_corpid'];
+            $secret = $_ENV["WECOM_${app}_SECRET"];
+            return $fwc->getAccessToken($corpId, $secret);
+        });
+
+        return $token;
     }
 
     #[Route('/test')]
@@ -136,12 +152,12 @@ class ApiController extends AbstractController
         $fwc = new Fwc();
         // $data = $fwc->getAccessToken($_ENV['wecom_corpid'], $_ENV['WECOM_APPROVAL_SECRET']);
         $contacts = new Contacts($_ENV['WECOM_CONTACTS_TOKEN']);
-        $approval = new Approval($_ENV['WECOM_APPROVAL_TOKEN']);
         // $data = $contacts->listTags();
         // $data = $contacts->addUsersToTag(1, ['HeZhiYun']);
         // $data = $contacts->delUsersFromTag(1, ['HeZhiYun']);
-        
-        $data = $approval->getFieldValue('202204260004', '用印次数');
+        $approval = new Approval($_ENV['WECOM_APPROVAL_TOKEN']);
+        // $data = $approval->getFieldValue('202204260004', '用印次数');
+        $data = $this->getWecomTokenFromCache('APPROVAL');
         dump($data);
         return new Response('<body></body>');
     }
