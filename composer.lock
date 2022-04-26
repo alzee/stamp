@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "alzee/fwc",
-            "version": "0.0.7",
+            "version": "0.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alzee/fwc.git",
-                "reference": "1ca2eace84f6d35fb0699811f181fa7ed0861f56"
+                "reference": "575faae6d368a20e62a0412f77a9297ff59d00b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alzee/fwc/zipball/1ca2eace84f6d35fb0699811f181fa7ed0861f56",
-                "reference": "1ca2eace84f6d35fb0699811f181fa7ed0861f56",
+                "url": "https://api.github.com/repos/alzee/fwc/zipball/575faae6d368a20e62a0412f77a9297ff59d00b5",
+                "reference": "575faae6d368a20e62a0412f77a9297ff59d00b5",
                 "shasum": ""
             },
             "require": {
@@ -44,9 +44,9 @@
             "homepage": "https://github.com/alzee/fwc",
             "support": {
                 "issues": "https://github.com/alzee/fwc/issues",
-                "source": "https://github.com/alzee/fwc/tree/0.0.7"
+                "source": "https://github.com/alzee/fwc/tree/0.0.9"
             },
-            "time": "2022-04-26T04:17:25+00:00"
+            "time": "2022-04-26T05:16:53+00:00"
         },
         {
             "name": "alzee/qstamp-sdk-php",
