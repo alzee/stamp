@@ -4,50 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fbc9256519b34bdd83843cc389fdddef",
+    "content-hash": "388540f9994a9fc48aafb238e3a6b2fe",
     "packages": [
-        {
-            "name": "alzee/fwc",
-            "version": "0.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alzee/fwc.git",
-                "reference": "1abe25eab5979e3b322195ff9a978d10b4b6e8a4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alzee/fwc/zipball/1abe25eab5979e3b322195ff9a978d10b4b6e8a4",
-                "reference": "1abe25eab5979e3b322195ff9a978d10b4b6e8a4",
-                "shasum": ""
-            },
-            "require": {
-                "symfony/dotenv": "6.0.*",
-                "symfony/http-client": "6.0.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Alzee\\Fwc\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Al Zee",
-                    "email": "z@alz.ee"
-                }
-            ],
-            "description": "php sdk for the Fucking WeCom/wework",
-            "homepage": "https://github.com/alzee/fwc",
-            "support": {
-                "issues": "https://github.com/alzee/fwc/issues",
-                "source": "https://github.com/alzee/fwc/tree/0.0.1"
-            },
-            "time": "2022-04-25T07:31:31+00:00"
-        },
         {
             "name": "alzee/qstamp-sdk-php",
             "version": "0.0.9",

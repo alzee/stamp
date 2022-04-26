@@ -11,6 +11,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\wecom\callback\Prpcrypt;
 use App\wecom\callback\WXBizMsgCrypt;
 use Alzee\Qstamp\Qstamp;
+use Alzee\Fwc\Fwc;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -118,6 +119,13 @@ class ApiController extends AbstractController
     #[Route('/token')]
     public function getToken(){
         $token = $this->stamp->getToken($_ENV['stamp_app_key'], $_ENV['stamp_app_secret']);
+        return new Response('<body></body>');
+    }
+
+    #[Route('/test')]
+    public function test(){
+        $fwc = new Fwc();
+        $fwc->getAccessToken();
         return new Response('<body></body>');
     }
 }
