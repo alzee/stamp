@@ -1,21 +1,4 @@
-AgentID: 3010040
-ApprovalInfo:
-    SpNo: 
-    SpStatus: 2
-    # 用章
-    TemplateId: C4NyFxsNsBuQ5PdsCbaGzYeUQ6u6bT4Teg6BUE1it
-    # 印章指纹录入
-    TemplateId: 3WK7zYJYf5SyLeiEqedzYYWbwddQMeEi3nwbTujq
-    Event: sys_approval_change
-    Applyer:
-        UserId: 
-    SpRecord:
-        SpStatus:
-        ApproverAttr:
-        Details:
-            Approver:
-                UserId: 
-    StatuChangeEvent: 2
+- cache
 
 
 # vim:ft=yaml
