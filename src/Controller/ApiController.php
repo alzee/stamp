@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\wecom\callback\Prpcrypt;
 use App\wecom\callback\WXBizMsgCrypt;
@@ -23,12 +24,14 @@ class ApiController extends AbstractController
     private $stamp_token;
     private $logger;
     private $stamp;
+    private $client;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, HttpClientInterface $client)
     {
         $this->stamp_token = $_ENV['stamp_token'];
         $this->logger = $logger;
         $this->stamp = new Qstamp($this->uuid, $this->stamp_token);
+        $this->client = $client;
     }
 
     #[Route('/', name: 'app_api')]
@@ -128,7 +131,10 @@ class ApiController extends AbstractController
         $fwc = new Fwc();
         $contacts = new Contacts($_ENV['WECOM_CONTACTS_TOKEN']);
         // $data = $fwc->getAccessToken($_ENV['wecom_corpid'], $_ENV['WECOM_CONTACTS_SECRET']);
-        $data = $contacts->list();
+        // $data = $contacts->listTags();
+        // $data = $contacts->addUsersToTag(1, ['HeZhiYun']);
+        $data = $contacts->delUsersFromTag(1, ['HeZhiYun']);
+        
         dump($data);
         return new Response('<body></body>');
     }
