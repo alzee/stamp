@@ -125,7 +125,8 @@ class ApiController extends AbstractController
     #[Route('/test')]
     public function test(){
         $fwc = new Fwc();
-        $fwc->getAccessToken();
+        // $token = $fwc->getAccessToken($_ENV['wecom_corpid'], $_ENV['WECOM_CONTACTS_SECRET']);
+        // dump($token);
         return new Response('<body></body>');
     }
 }
