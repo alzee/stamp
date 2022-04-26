@@ -76,7 +76,7 @@ class ApiController extends AbstractController
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$this->T_STAMP":
                             $this->logger->warning("use stamp");
-                            $this->stamp->pushApplication($applicationId, $this->stamp->getUid($applicant));
+                            $this->stamp->pushApplication($applicationId, $this->stamp->getUid($applicant), $this->getApprovalValue($applicationId, '用印次数'));
                             break;
                         case "$this->T_FINGERPRINT":
                             $this->logger->warning("add fingerprint");
@@ -135,13 +135,29 @@ class ApiController extends AbstractController
         $fwc = new Fwc();
         // $data = $fwc->getAccessToken($_ENV['wecom_corpid'], $_ENV['WECOM_APPROVAL_SECRET']);
         $contacts = new Contacts($_ENV['WECOM_CONTACTS_TOKEN']);
-        $approval = new Approval($_ENV['WECOM_APPROVAL_TOKEN']);
+        // $approval = new Approval($_ENV['WECOM_APPROVAL_TOKEN']);
         // $data = $contacts->listTags();
         // $data = $contacts->addUsersToTag(1, ['HeZhiYun']);
         // $data = $contacts->delUsersFromTag(1, ['HeZhiYun']);
-        $data = $approval->getDetail('202204260004');
         
+        $data = $this->getApprovalValue('202204260004', '用印次数');
         dump($data);
         return new Response('<body></body>');
+    }
+
+    public function getApprovalValue($applicationId, $field){
+        $approval = new Approval($_ENV['WECOM_APPROVAL_TOKEN']);
+        $data = $approval->getDetail($applicationId);
+        $contents = $data->info->apply_data->contents;
+        $arr = array_column($contents, 'title');
+        $arr = array_column($arr, 0);
+        $arr = array_column($arr, 'text');
+        $index = array_search($field, $arr);
+        $value = match ($contents[$index]->control) {
+            'Textarea' => $contents[$index]->value->text,
+            'Text' => $contents[$index]->value->text,
+            'Number' => $contents[$index]->value->new_number,
+        };
+        return $value;
     }
 }
