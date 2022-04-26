@@ -7,8 +7,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\wecom\callback\Prpcrypt;
 use App\wecom\callback\WXBizMsgCrypt;
 use Alzee\Qstamp\Qstamp;
@@ -24,14 +22,12 @@ class ApiController extends AbstractController
     private $stamp_token;
     private $logger;
     private $stamp;
-    private $client;
 
-    public function __construct(LoggerInterface $logger, HttpClientInterface $client)
+    public function __construct(LoggerInterface $logger)
     {
         $this->stamp_token = $_ENV['stamp_token'];
         $this->logger = $logger;
         $this->stamp = new Qstamp($this->uuid, $this->stamp_token);
-        $this->client = $client;
     }
 
     #[Route('/', name: 'app_api')]
