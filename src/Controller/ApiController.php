@@ -12,6 +12,7 @@ use App\wecom\callback\Prpcrypt;
 use App\wecom\callback\WXBizMsgCrypt;
 use Alzee\Qstamp\Qstamp;
 use Alzee\Fwc\Fwc;
+use Alzee\Fwc\Contacts;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -125,8 +126,10 @@ class ApiController extends AbstractController
     #[Route('/test')]
     public function test(){
         $fwc = new Fwc();
-        // $token = $fwc->getAccessToken($_ENV['wecom_corpid'], $_ENV['WECOM_CONTACTS_SECRET']);
-        // dump($token);
+        $contacts = new Contacts($_ENV['WECOM_CONTACTS_TOKEN']);
+        // $data = $fwc->getAccessToken($_ENV['wecom_corpid'], $_ENV['WECOM_CONTACTS_SECRET']);
+        $data = $contacts->list();
+        dump($data);
         return new Response('<body></body>');
     }
 }
