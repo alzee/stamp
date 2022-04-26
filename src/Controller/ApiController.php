@@ -67,6 +67,8 @@ class ApiController extends AbstractController
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 // dump($data);
 
+                $contacts = new Contacts($_ENV['WECOM_CONTACTS_TOKEN']);
+
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
                     $applicant = (string)$data->ApprovalInfo->Applyer->UserId;
                     $applicationId = 1 . substr((string)$data->ApprovalInfo->SpNo, 4);
@@ -78,8 +80,13 @@ class ApiController extends AbstractController
                         case "$this->T_FINGERPRINT":
                             $this->logger->warning("add fingerprint");
                             $this->stamp->addFingerprint($this->stamp->getUid(), $applicant);
+                            $contacts->addUsersToTag(1, [$applicant]);
                             break;
                     }
+                }
+
+                if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->DelUserItems) {
+                    $contacts->delUsersFromTag($data->TagId, $data->DelUserItems);
                 }
             }
             echo $str1;
@@ -129,9 +136,9 @@ class ApiController extends AbstractController
         // $data = $fwc->getAccessToken($_ENV['wecom_corpid'], $_ENV['WECOM_CONTACTS_SECRET']);
         // $data = $contacts->listTags();
         // $data = $contacts->addUsersToTag(1, ['HeZhiYun']);
-        $data = $contacts->delUsersFromTag(1, ['HeZhiYun']);
+        // $data = $contacts->delUsersFromTag(1, ['HeZhiYun']);
         
-        dump($data);
+        // dump($data);
         return new Response('<body></body>');
     }
 }
