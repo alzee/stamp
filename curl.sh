@@ -11,7 +11,7 @@ api=auth/tToken
 # curl -d key=$stamp_app_key -d secret=$stamp_app_secret "$QSTAMP_API_URL/$api"
 # curl "$QSTAMP_API_URL/$api?key=$stamp_app_key&secret=$stamp_app_secret"
 
-# api=device/list
+api=device/list
 # curl -H "tToken: $stamp_token" "$QSTAMP_API_URL/$api"
 
 api=finger/list
