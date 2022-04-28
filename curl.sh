@@ -12,7 +12,7 @@ api=auth/tToken
 # curl "$QSTAMP_API_URL/$api?key=$stamp_app_key&secret=$stamp_app_secret"
 
 api=device/list
-curl -H "tToken: $stamp_token" "$QSTAMP_API_URL/$api"
+# curl -H "tToken: $stamp_token" "$QSTAMP_API_URL/$api"
 
 api=finger/list
 # curl -H "tToken: $stamp_token" "$QSTAMP_API_URL/$api" -d "uuid=$uuid"
