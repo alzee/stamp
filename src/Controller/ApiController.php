@@ -62,7 +62,7 @@ class ApiController extends AbstractController
         if ($errCode == 0) {
             if ($postData) {
                 $pc = new Prpcrypt($encodingAesKey);
-                $arr = $pc->decrypt($str, $_ENV['WECOM_CORPID']);
+                $arr = $pc->decrypt($str, $corpId);
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 // dump($data);
 
