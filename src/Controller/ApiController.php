@@ -175,7 +175,8 @@ class ApiController extends AbstractController
         // $data = $contacts->delUsersFromTag(1, ['HeZhiYun']);
         $approval = new Approval($_ENV['WECOM_APPROVAL_TOKEN']);
         // $data = $approval->getFieldValue('202204260004', '用印次数');
-        $data = $this->getWecomTokenFromCache('APPROVAL');
+        // $data = $this->getWecomTokenFromCache('APPROVAL');
+        $data = $this->getStampTokenFromCache($this->uuid);
         dump($data);
         return new Response('<body></body>');
     }
