@@ -178,6 +178,7 @@ class ApiController extends AbstractController
         // $data = $this->getWecomTokenFromCache('APPROVAL');
         $data = $this->getStampTokenFromCache($this->uuid);
         dump($data);
+        $this->stamp->setSleepTime();
         return new Response('<body></body>');
     }
 }
