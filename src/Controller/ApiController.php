@@ -57,11 +57,11 @@ class ApiController extends AbstractController
         $encodingAesKey = $_ENV['APPROVAL_ENCODINGAESKEY'];
         $corpId = $_ENV['WECOM_CORPID'];
 
-        $wxcpt = new WXBizMsgCrypt($APPROVAL_TOKEN, $encodingAesKey, $corpId);
+        $wxcpt = new WXBizMsgCrypt($approval_token, $encodingAesKey, $corpId);
         $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $str, $str1);
         if ($errCode == 0) {
             if ($postData) {
-                $pc = new Prpcrypt($_ENV['APPROVAL_ENCODINGAESKEY']);
+                $pc = new Prpcrypt($encodingAesKey);
                 $arr = $pc->decrypt($str, $_ENV['WECOM_CORPID']);
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 // dump($data);
