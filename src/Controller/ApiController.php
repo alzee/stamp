@@ -22,23 +22,19 @@ class ApiController extends AbstractController
     private $uuid = '0X3600303238511239343734';
     private $T_STAMP= 'C4NyFxsNsBuQ5PdsCbaGzYeUQ6u6bT4Teg6BUE1it';
     private $T_FINGERPRINT = '3WK7zYJYf5SyLeiEqedzYYWbwddQMeEi3nwbTujq';
-    private $stamp_token;
     private $logger;
     private $stamp;
 
     public function __construct(LoggerInterface $logger)
     {
-        $this->stamp_token = $_ENV['stamp_token'];
         $this->logger = $logger;
-        $this->stamp = new Qstamp($this->uuid, $this->stamp_token);
+        $this->stamp = new Qstamp($this->uuid, $this->getStampTokenFromCache($this->uuid));
     }
 
     #[Route('/', name: 'app_api')]
     public function index(): Response
     {
-        return $this->render('api/index.html.twig', [
-            'controller_name' => 'ApiController',
-        ]);
+        return new Response('<body></body>');
     }
 
     #[Route('/wecom', name: 'app_wecom')]
@@ -57,16 +53,16 @@ class ApiController extends AbstractController
             $str = $query->get('echostr');
             $str1 = $str;
         }
-        $approval_token = $_ENV['approval_token'];
-        $encodingAesKey = $_ENV['approval_EncodingAESKey'];
-        $corpId = $_ENV['wecom_corpid'];
+        $approval_token = $_ENV['APPROVAL_TOKEN'];
+        $encodingAesKey = $_ENV['APPROVAL_ENCODINGAESKEY'];
+        $corpId = $_ENV['WECOM_CORPID'];
 
-        $wxcpt = new WXBizMsgCrypt($approval_token, $encodingAesKey, $corpId);
+        $wxcpt = new WXBizMsgCrypt($APPROVAL_TOKEN, $encodingAesKey, $corpId);
         $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $str, $str1);
         if ($errCode == 0) {
             if ($postData) {
-                $pc = new Prpcrypt($_ENV['approval_EncodingAESKey']);
-                $arr = $pc->decrypt($str, $_ENV['wecom_corpid']);
+                $pc = new Prpcrypt($_ENV['APPROVAL_ENCODINGAESKEY']);
+                $arr = $pc->decrypt($str, $_ENV['WECOM_CORPID']);
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 // dump($data);
 
@@ -141,9 +137,29 @@ class ApiController extends AbstractController
             $item->expiresAfter(7200);
 
             $fwc = new Fwc();
-            $corpId = $_ENV['wecom_corpid'];
+            $corpId = $_ENV['WECOM_CORPID'];
             $secret = $_ENV["WECOM_${app}_SECRET"];
             return $fwc->getAccessToken($corpId, $secret);
+        });
+
+        return $token;
+    }
+
+    public function getStampTokenFromCache($uuid, $refresh = false)
+    {
+        $cache = new FilesystemAdapter();
+
+        if ($refresh) {
+            $cache->clear("STAMP_TOKEN");
+        }
+
+        $token = $cache->get("STAMP_TOKEN", function (ItemInterface $item) use ($uuid) {
+            $item->expiresAfter(7200);
+
+            $stamp = new Qstamp($uuid);
+            $key = $_ENV["STAMP_APP_KEY"];
+            $secret = $_ENV["STAMP_APP_SECRET"];
+            return $stamp->getToken($key, $secret);
         });
 
         return $token;
@@ -152,7 +168,7 @@ class ApiController extends AbstractController
     #[Route('/test')]
     public function test(){
         $fwc = new Fwc();
-        // $data = $fwc->getAccessToken($_ENV['wecom_corpid'], $_ENV['WECOM_APPROVAL_SECRET']);
+        // $data = $fwc->getAccessToken($_ENV['WECOM_CORPID'], $_ENV['WECOM_APPROVAL_SECRET']);
         $contacts = new Contacts($_ENV['WECOM_CONTACTS_TOKEN']);
         // $data = $contacts->listTags();
         // $data = $contacts->addUsersToTag(1, ['HeZhiYun']);
