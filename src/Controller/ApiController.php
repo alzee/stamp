@@ -167,16 +167,9 @@ class ApiController extends AbstractController
 
     #[Route('/test')]
     public function test(){
-        $fwc = new Fwc();
-        // $data = $fwc->getAccessToken($_ENV['WECOM_CORPID'], $_ENV['WECOM_APPROVAL_SECRET']);
-        $contacts = new Contacts($_ENV['WECOM_CONTACTS_TOKEN']);
-        // $data = $contacts->listTags();
-        // $data = $contacts->addUsersToTag(1, ['HeZhiYun']);
-        // $data = $contacts->delUsersFromTag(1, ['HeZhiYun']);
-        $approval = new Approval($_ENV['WECOM_APPROVAL_TOKEN']);
-        // $data = $approval->getFieldValue('202204260004', '用印次数');
-        // $data = $this->getWecomTokenFromCache('APPROVAL');
-        $data = $this->getStampTokenFromCache($this->uuid);
+        // $data = $this->getStampTokenFromCache($this->uuid);
+        $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
+        $data = $approval->getDetail('202205010004');
         dump($data);
         $this->stamp->setSleepTime();
         return new Response('<body></body>');
