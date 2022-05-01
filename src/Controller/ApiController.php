@@ -168,9 +168,8 @@ class ApiController extends AbstractController
     #[Route('/test')]
     public function test(){
         // $data = $this->getStampTokenFromCache($this->uuid);
-        $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
-        $data = $approval->getDetail('202205010004');
-        dump($data);
+        $data = $this->stamp->records();
+        dump($data->getContent());
         $this->stamp->setSleepTime();
         return new Response('<body></body>');
     }
