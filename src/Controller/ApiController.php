@@ -71,12 +71,12 @@ class ApiController extends AbstractController
 
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
                     $applicant = (string)$data->ApprovalInfo->Applyer->UserId;
-                    // 202204220055 to 104220055
-                    $applicationId = 1 . substr((string)$data->ApprovalInfo->SpNo, 3);
+                    $spNo = (string)$data->ApprovalInfo->SpNo;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$this->T_STAMP":
                             $this->logger->warning("use stamp");
-                            $this->stamp->pushApplication($applicationId, $this->stamp->getUid($applicant), $approval->getFieldValue($applicationId, '用印次数'));
+                            // $spNo: 202204220055 to 104220055
+                            $this->stamp->pushApplication(1 . substr($spNo, 3), $this->stamp->getUid($applicant), $approval->getFieldValue($spNo, '用印次数'));
                             break;
                         case "$this->T_FINGERPRINT":
                             $this->logger->warning("add fingerprint");
