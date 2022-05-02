@@ -21,15 +21,18 @@ use Symfony\Contracts\Cache\ItemInterface;
 #[Route('/api')]
 class ApiController extends AbstractController
 {
-    private $uuid = '0X3600303238511239343734';
-    private $T_STAMP= 'C4NyFxsNsBuQ5PdsCbaGzYeUQ6u6bT4Teg6BUE1it';
-    private $T_FINGERPRINT = '3WK7zYJYf5SyLeiEqedzYYWbwddQMeEi3nwbTujq';
+    private $uuid;
+    private $templateStamp;
+    private $templateFingerprint;
     private $logger;
     private $stamp;
 
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
+        $this->uuid = $_ENV['STAMP_UUID'];
+        $this->templateStamp = $_ENV['WECOM_TEMPLATE_STAMP'];
+        $this->templateFingerprint = $_ENV['WECOM_TEMPLATE_FINGERPRINT'];
         $this->stamp = new Qstamp($this->uuid, $this->getStampTokenFromCache($this->uuid));
     }
 
@@ -75,11 +78,11 @@ class ApiController extends AbstractController
                     $applicant = (string)$data->ApprovalInfo->Applyer->UserId;
                     $spNo = (string)$data->ApprovalInfo->SpNo;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
-                        case "$this->T_STAMP":
+                        case "$this->templateStamp":
                             $this->logger->warning("use stamp");
                             $this->stamp->pushApplication($this->stamp->applicationIdFromWecom($spNo), $this->stamp->getUid($applicant), $approval->getFieldValue($spNo, '用印次数'));
                             break;
-                        case "$this->T_FINGERPRINT":
+                        case "$this->templateFingerprint":
                             $this->logger->warning("add fingerprint");
                             $this->stamp->addFingerprint($this->stamp->getUid(), $applicant);
                             // tag: "用章", tid: 1
