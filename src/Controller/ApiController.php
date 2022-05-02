@@ -78,7 +78,8 @@ class ApiController extends AbstractController
                         case "$this->T_STAMP":
                             $this->logger->warning("use stamp");
                             // $spNo: 202204220055 to 104220055
-                            $this->stamp->pushApplication(1 . substr($spNo, 3), $this->stamp->getUid($applicant), $approval->getFieldValue($spNo, '用印次数'));
+                            $applicationId = (substr($spNo, 0, 4) - 2021) . substr($spNo, 4);
+                            $this->stamp->pushApplication($applicationId, $this->stamp->getUid($applicant), $approval->getFieldValue($spNo, '用印次数'));
                             break;
                         case "$this->T_FINGERPRINT":
                             $this->logger->warning("add fingerprint");
@@ -112,11 +113,22 @@ class ApiController extends AbstractController
         $data = json_decode($data);
         $uuid = $data->uuid;
         // dump($data);
-        $msg = match ($data->cmd) {
-            1000 => $this->stamp->setSleepTime($data->data->sleepTime),
-            1130 => $this->stamp->uploadPic(),
-            default => true,
-        };
+        switch ($data->cmd) {
+            case 1000:
+                $this->stamp->setSleepTime($data->data->sleepTime);
+                break;
+            case 1130:
+                $path = $data->data->path;
+                $applicationId = $data->data->applicationId;
+                $media = new Media($this->getWecomTokenFromCache('APPROVAL'));
+                $msg = new Message($this->getWecomTokenFromCache('APPROVAL'));
+                $mediaId = $media->upload($path, 'image')->media_id;
+                // $data = $msg->sendTextTo('Houfei', "test", '3010040');
+                $applicant = '';
+                $
+                $data = $msg->sendImgTo('Houfei', $mediaId, '3010040');
+                break;
+        }
         $resp = new Response();
         return $resp;
     }
@@ -169,12 +181,13 @@ class ApiController extends AbstractController
 
     #[Route('/test')]
     public function test(){
-        // $data = $this->getStampTokenFromCache($this->uuid);
-        // $data = $this->stamp->records();
+        $data = $this->getStampTokenFromCache($this->uuid);
+        $data = $this->stamp->records()->getContent();
         $msg = new Message($this->getWecomTokenFromCache('APPROVAL'));
         $media = new Media($this->getWecomTokenFromCache('APPROVAL'));
-        // $data = $msg->sendTextTo('Houfei', "it's okay", '3010040');
-        $media->upload('a.png', 'image');
+        // $data = $msg->sendTextTo('Houfei', "https://wwcdn.weixin.qq.com/node/wework/images/202201062104.366e5ee28e.png", '3010040');
+        // $data = $media->upload('a.png', 'image');
+        $data = $msg->sendImgTo('Houfei', '3Kiht6VGrUvmPT70gD-ohpnQlxog97Dd5BFovhOOm_2dqGr8kBdN5OH9FGc8J7uv4', '3010040');
         dump($data);
         return new Response('<body></body>');
     }
