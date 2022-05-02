@@ -55,8 +55,8 @@ class ApiController extends AbstractController
             $str = $query->get('echostr');
             $str1 = $str;
         }
-        $approval_token = $_ENV['APPROVAL_TOKEN'];
-        $encodingAesKey = $_ENV['APPROVAL_ENCODINGAESKEY'];
+        $approval_token = $_ENV['CALLBACK_TOKEN'];
+        $encodingAesKey = $_ENV['CALLBACK_ENCODINGAESKEY'];
         $corpId = $_ENV['WECOM_CORPID'];
 
         $wxcpt = new WXBizMsgCrypt($approval_token, $encodingAesKey, $corpId);
