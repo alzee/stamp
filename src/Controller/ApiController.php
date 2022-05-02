@@ -182,15 +182,7 @@ class ApiController extends AbstractController
 
     #[Route('/test')]
     public function test(){
-        $data = $this->getStampTokenFromCache($this->uuid);
-        $data = $this->stamp->records()->getContent();
-        $msg = new Message($this->getWecomTokenFromCache('APPROVAL'));
-        $media = new Media($this->getWecomTokenFromCache('APPROVAL'));
-        // $data = $msg->sendTextTo('Houfei', "https://wwcdn.weixin.qq.com/node/wework/images/202201062104.366e5ee28e.png", '3010040');
-        // $data = $media->upload('a.png', 'image');
-        // $data = $msg->sendImgTo('Houfei', '3Kiht6VGrUvmPT70gD-ohpnQlxog97Dd5BFovhOOm_2dqGr8kBdN5OH9FGc8J7uv4', '3010040');
-        $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
-        // $data = $approval->getCcs('202205010010');
+        $data = $this->stamp->setSleepTime();
         dump($data);
         return new Response('<body></body>');
     }
