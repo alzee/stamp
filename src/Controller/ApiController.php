@@ -77,9 +77,7 @@ class ApiController extends AbstractController
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$this->T_STAMP":
                             $this->logger->warning("use stamp");
-                            // $spNo: 202204220055 to 104220055
-                            $applicationId = (substr($spNo, 0, 4) - 2021) . substr($spNo, 4);
-                            $this->stamp->pushApplication($applicationId, $this->stamp->getUid($applicant), $approval->getFieldValue($spNo, '用印次数'));
+                            $this->stamp->pushApplication($this->stamp->applicationIdFromWecom($spNo), $this->stamp->getUid($applicant), $approval->getFieldValue($spNo, '用印次数'));
                             break;
                         case "$this->T_FINGERPRINT":
                             $this->logger->warning("add fingerprint");
@@ -118,15 +116,16 @@ class ApiController extends AbstractController
                 $this->stamp->setSleepTime($data->data->sleepTime);
                 break;
             case 1130:
-                $path = $data->data->path;
-                $applicationId = $data->data->applicationId;
+                $path = $_ENV['IMG_DIR_PREFIX'] . preg_replace('/\/group\d+/', '', $data->data->path);
                 $media = new Media($this->getWecomTokenFromCache('APPROVAL'));
-                $msg = new Message($this->getWecomTokenFromCache('APPROVAL'));
                 $mediaId = $media->upload($path, 'image')->media_id;
-                // $data = $msg->sendTextTo('Houfei', "test", '3010040');
-                $applicant = '';
-                $
-                $data = $msg->sendImgTo('Houfei', $mediaId, '3010040');
+                $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
+                $spNo = $this->stamp->applicationIdToWecom($data->data->applicationId);
+                $applicant = $approval->getApplicant($spNo);
+                $approver = $approval->getApprovers($spNo);
+                $msg = new Message($this->getWecomTokenFromCache('APPROVAL'));
+                // $data = $msg->sendTextTo("$applicant|$approver", "test", '3010040');
+                $data = $msg->sendImgTo("$applicant|$approver", $mediaId, '3010040');
                 break;
         }
         $resp = new Response();
@@ -187,7 +186,9 @@ class ApiController extends AbstractController
         $media = new Media($this->getWecomTokenFromCache('APPROVAL'));
         // $data = $msg->sendTextTo('Houfei', "https://wwcdn.weixin.qq.com/node/wework/images/202201062104.366e5ee28e.png", '3010040');
         // $data = $media->upload('a.png', 'image');
-        $data = $msg->sendImgTo('Houfei', '3Kiht6VGrUvmPT70gD-ohpnQlxog97Dd5BFovhOOm_2dqGr8kBdN5OH9FGc8J7uv4', '3010040');
+        // $data = $msg->sendImgTo('Houfei', '3Kiht6VGrUvmPT70gD-ohpnQlxog97Dd5BFovhOOm_2dqGr8kBdN5OH9FGc8J7uv4', '3010040');
+        $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
+        $data = $approval->getCcs('202205010010');
         dump($data);
         return new Response('<body></body>');
     }
