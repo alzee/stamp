@@ -13,6 +13,7 @@ use Alzee\Qstamp\Qstamp;
 use Alzee\Fwc\Fwc;
 use Alzee\Fwc\Contacts;
 use Alzee\Fwc\Approval;
+use Alzee\Fwc\Chat;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -168,9 +169,10 @@ class ApiController extends AbstractController
     #[Route('/test')]
     public function test(){
         // $data = $this->getStampTokenFromCache($this->uuid);
-        $data = $this->stamp->records();
-        dump($data->getContent());
-        $this->stamp->setSleepTime();
+        // $data = $this->stamp->records();
+        $chat = new Chat($this->getWecomTokenFromCache('APPROVAL'));
+        $data = $chat->sendTextTo('Houfei', "it's okay", '3010040');
+        dump($data);
         return new Response('<body></body>');
     }
 }
