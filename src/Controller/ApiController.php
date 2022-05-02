@@ -128,7 +128,7 @@ class ApiController extends AbstractController
                 $data = $msg->sendImgTo("$applicant|$approver", $mediaId, '3010040');
                 break;
         }
-        return $this->json(["code" => 0, "msg": '', "data": ""]);
+        return $this->json(["code" => 0, "msg" => '', "data" => ""]);
     }
 
     /**
