@@ -42,7 +42,7 @@ class ApiController extends AbstractController
         return new Response('<body></body>');
     }
 
-    #[Route('/wecom', name: 'app_wecom')]
+    #[Route('/wecom/callback', name: 'app_wecom_callback')]
     public function wecom(Request $request): Response
     {
         $query = $request->query;
