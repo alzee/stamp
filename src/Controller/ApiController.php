@@ -128,8 +128,7 @@ class ApiController extends AbstractController
                 $data = $msg->sendImgTo("$applicant|$approver", $mediaId, '3010040');
                 break;
         }
-        $resp = new Response();
-        return $resp;
+        return $this->json(["code" => 0, "msg": '', "data": ""]);
     }
 
     /**
@@ -188,7 +187,7 @@ class ApiController extends AbstractController
         // $data = $media->upload('a.png', 'image');
         // $data = $msg->sendImgTo('Houfei', '3Kiht6VGrUvmPT70gD-ohpnQlxog97Dd5BFovhOOm_2dqGr8kBdN5OH9FGc8J7uv4', '3010040');
         $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
-        $data = $approval->getCcs('202205010010');
+        // $data = $approval->getCcs('202205010010');
         dump($data);
         return new Response('<body></body>');
     }
