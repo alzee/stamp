@@ -120,9 +120,14 @@ class ApiController extends AbstractController
                 break;
             case 1010:  // fingerprint added
                 $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
-                // tag: "用章", tid: 1
-                dump($data);
-                // $contacts->addUsersToTag(1, [$applicant]);
+                dump($data->data->status);
+                if ($data->data->status) {
+                    // tag: "用章", tid: 1
+                    $uid = $data->data->userId;
+                    $contacts->addUsersToTag(1, [$this->stamp->getUsername($uid)]);
+                } else {
+                    // $this->stamp->addFingerprint($uid, $username);   // where to get $username? cache?
+                }
                 break;
             case 1130:  // img uploaded
                 $path = $_ENV['IMG_DIR_PREFIX'] . preg_replace('/\/group\d+/', '', $data->data->path);
