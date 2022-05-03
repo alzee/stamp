@@ -51,16 +51,16 @@
         },
         {
             "name": "alzee/qstamp-sdk-php",
-            "version": "0.1.3",
+            "version": "0.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alzee/qstamp-sdk-php.git",
-                "reference": "fa4f849db8b5a53db01fa612b170d40034842ac5"
+                "reference": "75f1045e820bfb4d95ff92c9861e7e89206cf6ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alzee/qstamp-sdk-php/zipball/fa4f849db8b5a53db01fa612b170d40034842ac5",
-                "reference": "fa4f849db8b5a53db01fa612b170d40034842ac5",
+                "url": "https://api.github.com/repos/alzee/qstamp-sdk-php/zipball/75f1045e820bfb4d95ff92c9861e7e89206cf6ac",
+                "reference": "75f1045e820bfb4d95ff92c9861e7e89206cf6ac",
                 "shasum": ""
             },
             "require": {
@@ -86,9 +86,9 @@
             "description": "qyunxi stamp SDK for php",
             "support": {
                 "issues": "https://github.com/alzee/qstamp-sdk-php/issues",
-                "source": "https://github.com/alzee/qstamp-sdk-php/tree/0.1.3"
+                "source": "https://github.com/alzee/qstamp-sdk-php/tree/0.1.6"
             },
-            "time": "2022-05-02T02:49:12+00:00"
+            "time": "2022-05-03T08:28:27+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -1694,16 +1694,16 @@
         },
         {
             "name": "symfony/flex",
-            "version": "v2.1.7",
+            "version": "v2.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/flex.git",
-                "reference": "3eb57ba4b5d3f14cdaafe030936421c22e9f98a2"
+                "reference": "dcbe58c3fbafeaeb32f619bf94c3912c0c732b65"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/flex/zipball/3eb57ba4b5d3f14cdaafe030936421c22e9f98a2",
-                "reference": "3eb57ba4b5d3f14cdaafe030936421c22e9f98a2",
+                "url": "https://api.github.com/repos/symfony/flex/zipball/dcbe58c3fbafeaeb32f619bf94c3912c0c732b65",
+                "reference": "dcbe58c3fbafeaeb32f619bf94c3912c0c732b65",
                 "shasum": ""
             },
             "require": {
@@ -1739,7 +1739,7 @@
             "description": "Composer plugin for Symfony",
             "support": {
                 "issues": "https://github.com/symfony/flex/issues",
-                "source": "https://github.com/symfony/flex/tree/v2.1.7"
+                "source": "https://github.com/symfony/flex/tree/v2.1.8"
             },
             "funding": [
                 {
@@ -1755,7 +1755,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-15T08:20:43+00:00"
+            "time": "2022-05-02T10:23:41+00:00"
         },
         {
             "name": "symfony/form",
