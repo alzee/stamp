@@ -92,7 +92,9 @@ class ApiController extends AbstractController
                 }
 
                 if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->DelUserItems) {
-                    $contacts->delUsersFromTag($data->TagId, $data->DelUserItems);
+                    foreach (explode(',', $data->DelUserItems) as $username) {
+                        $this->stamp->delFingerprint($this->stamp->getUid($username));
+                    }
                 }
             }
             echo $str1;
