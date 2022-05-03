@@ -119,10 +119,10 @@ class ApiController extends AbstractController
                 $this->stamp->setSleepTime($data->data->sleepTime);
                 break;
             case 1010:  // fingerprint added
-                $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
                 if ($data->data->status) {
                     // tag: "用章", tid: 1
                     $uid = $data->data->userId;
+                    $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
                     $contacts->addUsersToTag(1, [$this->stamp->getUsername($uid)]);
                 } else {
                     // $this->stamp->addFingerprint($uid, $username);   // where to get $username? cache?
