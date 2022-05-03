@@ -79,14 +79,12 @@ class ApiController extends AbstractController
                     $spNo = (string)$data->ApprovalInfo->SpNo;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$this->templateStamp":
-                            $this->logger->warning("use stamp");
-                            $this->stamp->pushApplication($this->stamp->applicationIdFromWecom($spNo), $this->stamp->getUid($applicant), $approval->getFieldValue($spNo, '用印次数'));
+                            // $this->logger->warning("use stamp");
+                            $this->stamp->pushApplication($this->stamp->applicationIdFromWecom($spNo), $this->stamp->getUid($applicant), $approval->getFieldValue($spNo, '用章次数'));
                             break;
                         case "$this->templateFingerprint":
-                            $this->logger->warning("add fingerprint");
+                            // $this->logger->warning("add fingerprint");
                             $this->stamp->addFingerprint($this->stamp->getUid(), $applicant);
-                            // tag: "用章", tid: 1
-                            $contacts->addUsersToTag(1, [$applicant]);
                             break;
                     }
                 }
@@ -117,10 +115,16 @@ class ApiController extends AbstractController
         $uuid = $data->uuid;
         // dump($data);
         switch ($data->cmd) {
-            case 1000:
+            case 1000:  // startup
                 $this->stamp->setSleepTime($data->data->sleepTime);
                 break;
-            case 1130:
+            case 1010:  // fingerprint added
+                $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
+                // tag: "用章", tid: 1
+                dump($data);
+                // $contacts->addUsersToTag(1, [$applicant]);
+                break;
+            case 1130:  // img uploaded
                 $path = $_ENV['IMG_DIR_PREFIX'] . preg_replace('/\/group\d+/', '', $data->data->path);
                 $media = new Media($this->getWecomTokenFromCache('APPROVAL'));
                 $mediaId = $media->upload($path, 'image')->media_id;
