@@ -23,6 +23,9 @@ api=device/model
 api=finger/add
 # curl -H "tToken: $stamp_token" "$QSTAMP_API_URL/$api" -d "userId=$uid&username=houfei&uuid=$uuid"
 
+api=finger/del
+# curl -H "tToken: $stamp_token" "$QSTAMP_API_URL/$api" -d "userId=$uid&uuid=$uuid"
+
 api=application/push
 # curl -H "tToken: $stamp_token" "$QSTAMP_API_URL/$api" -d "applicationId=2147483647&userId=$uid&totalCount=5&needCount=0&uuid=$uuid"
 

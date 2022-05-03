@@ -182,7 +182,9 @@ class ApiController extends AbstractController
 
     #[Route('/test')]
     public function test(){
-        $data = $this->stamp->setSleepTime();
+        $data = $this->stamp->listFingerprints()->getContent();
+        // $data = $this->stamp->delFingerprint(1);
+        // $data = $this->getStampTokenFromCache($this->uuid);
         dump($data);
         return new Response('<body></body>');
     }
