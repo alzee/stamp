@@ -116,7 +116,7 @@ class ApiController extends AbstractController
         // dump($data);
         switch ($data->cmd) {
             case 1000:  // startup
-                $this->stamp->setSleepTime($data->data->sleepTime);
+                $this->stamp->setSleepTime();
                 break;
             case 1010:  // fingerprint added
                 $uid = $data->data->userId;
