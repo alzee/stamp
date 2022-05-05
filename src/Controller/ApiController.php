@@ -123,7 +123,7 @@ class ApiController extends AbstractController
                 if ($data->data->status) {
                     // tag: "用章", tid: 1
                     $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
-                    $contacts->addUsersToTag(1, [$this->stamp->getUsername($uid)]);
+                    $contacts->addUsersToTag(8, [$this->stamp->getUsername($uid)]);
                 } else {
                     // $this->stamp->addFingerprint($uid, $username);   // where to get $username? cache?
                 }
