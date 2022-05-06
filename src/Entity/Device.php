@@ -16,7 +16,7 @@ class Device
     #[ORM\Column(type: 'string', length: 255)]
     private $uuid;
 
-    #[ORM\ManyToOne(targetEntity: organization::class, inversedBy: 'devices')]
+    #[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: 'devices')]
     private $org;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -42,12 +42,12 @@ class Device
         return $this;
     }
 
-    public function getOrg(): ?organization
+    public function getOrg(): ?Organization
     {
         return $this->org;
     }
 
-    public function setOrg(?organization $org): self
+    public function setOrg(?Organization $org): self
     {
         $this->org = $org;
 

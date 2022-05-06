@@ -192,9 +192,9 @@ class ApiController extends AbstractController
     public function test($slug, Request $request, ManagerRegistry $doctrine){
         $em = $doctrine->getManager();
         $corpId = 'ww598d275367f9ce0a';
-        $wecom = $doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
+        $device = $doctrine->getRepository(Device::class);
         dump($slug);
-        dump($wecom->getCallbackAESKey());
+        dump($device);
         return new Response('<body></body>');
     }
 }
