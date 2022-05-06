@@ -19,8 +19,11 @@ class Fingerprint
     #[ORM\Column(type: 'string', length: 255)]
     private $username;
 
-    #[ORM\ManyToOne(targetEntity: organization::class, inversedBy: 'fingerprints')]
+    #[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: 'fingerprints')]
     private $org;
+
+    #[ORM\ManyToOne(targetEntity: Device::class, inversedBy: 'fingerprints')]
+    private $device;
 
     public function getId(): ?int
     {
@@ -51,14 +54,26 @@ class Fingerprint
         return $this;
     }
 
-    public function getOrg(): ?organization
+    public function getOrg(): ?Organization
     {
         return $this->org;
     }
 
-    public function setOrg(?organization $org): self
+    public function setOrg(?Organization $org): self
     {
         $this->org = $org;
+
+        return $this;
+    }
+
+    public function getDevice(): ?Device
+    {
+        return $this->device;
+    }
+
+    public function setDevice(?Device $device): self
+    {
+        $this->device = $device;
 
         return $this;
     }

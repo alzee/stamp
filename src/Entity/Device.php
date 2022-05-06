@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DeviceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DeviceRepository::class)]
@@ -24,6 +26,14 @@ class Device
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private $tagId;
+
+    #[ORM\OneToMany(mappedBy: 'device', targetEntity: Fingerprint::class)]
+    private $fingerprints;
+
+    public function __construct()
+    {
+        $this->fingerprints = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -74,6 +84,36 @@ class Device
     public function setTagId(?int $tagId): self
     {
         $this->tagId = $tagId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Fingerprint>
+     */
+    public function getFingerprints(): Collection
+    {
+        return $this->fingerprints;
+    }
+
+    public function addFingerprint(Fingerprint $fingerprint): self
+    {
+        if (!$this->fingerprints->contains($fingerprint)) {
+            $this->fingerprints[] = $fingerprint;
+            $fingerprint->setDevice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFingerprint(Fingerprint $fingerprint): self
+    {
+        if ($this->fingerprints->removeElement($fingerprint)) {
+            // set the owning side to null (unless already changed)
+            if ($fingerprint->getDevice() === $this) {
+                $fingerprint->setDevice(null);
+            }
+        }
 
         return $this;
     }

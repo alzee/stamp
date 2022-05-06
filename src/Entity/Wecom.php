@@ -126,12 +126,12 @@ class Wecom
         return $this;
     }
 
-    public function getOrg(): ?organization
+    public function getOrg(): ?Organization
     {
         return $this->org;
     }
 
-    public function setOrg(?organization $org): self
+    public function setOrg(?Organization $org): self
     {
         $this->org = $org;
 
