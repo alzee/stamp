@@ -47,6 +47,16 @@ class DeviceRepository extends ServiceEntityRepository
         }
     }
 
+    public function findOneByOrg($value): ?Device
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.org = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     // /**
     //  * @return Device[] Returns an array of Device objects
     //  */

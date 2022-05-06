@@ -192,7 +192,7 @@ class ApiController extends AbstractController
     public function test($slug, Request $request, ManagerRegistry $doctrine){
         $em = $doctrine->getManager();
         $corpId = 'ww598d275367f9ce0a';
-        $device = $doctrine->getRepository(Device::class);
+        $device = $doctrine->getRepository(Device::class)->findOneByOrg(1);
         dump($slug);
         dump($device);
         return new Response('<body></body>');
