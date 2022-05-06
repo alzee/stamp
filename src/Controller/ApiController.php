@@ -172,10 +172,10 @@ class ApiController extends AbstractController
         $cache = new FilesystemAdapter();
 
         if ($refresh) {
-            $cache->clear("STAMP_TOKEN");
+            $cache->clear("STAMP_${uuid}_TOKEN");
         }
 
-        $token = $cache->get("STAMP_TOKEN", function (ItemInterface $item) use ($uuid) {
+        $token = $cache->get("STAMP_${uuid}_TOKEN", function (ItemInterface $item) use ($uuid) {
             $item->expiresAfter(7200);
 
             $stamp = new Qstamp($uuid);
