@@ -79,7 +79,8 @@ class ApiController extends AbstractController
                     }
                 }
 
-                if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->DelUserItems) {
+                $tagId = 8;
+                if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->TagId == $tagId && $data->DelUserItems) {
                     foreach (explode(',', $data->DelUserItems) as $username) {
                         $stamp->delFingerprint($stamp->getUid($username));
                     }
@@ -112,9 +113,9 @@ class ApiController extends AbstractController
             case 1010:  // fingerprint added
                 $uid = $data->data->userId;
                 if ($data->data->status) {
-                    // tag: "用章", tid: 1
                     $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
-                    $contacts->addUsersToTag(8, [$stamp->getUsername($uid)]);
+                    $tagId = 8; // tag: "用章", id: 8
+                    $contacts->addUsersToTag($tagId, [$stamp->getUsername($uid)]);
                 } else {
                     // $stamp->addFingerprint($uid, $username);   // where to get $username? cache?
                 }
