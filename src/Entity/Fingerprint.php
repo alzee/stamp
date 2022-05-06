@@ -13,7 +13,7 @@ class Fingerprint
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $uid;
 
     #[ORM\Column(type: 'string', length: 255)]
