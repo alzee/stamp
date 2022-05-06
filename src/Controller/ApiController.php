@@ -20,17 +20,13 @@ use Symfony\Contracts\Cache\ItemInterface;
 #[Route('/api')]
 class ApiController extends AbstractController
 {
-    private $uuid;
     private $templateStamp;
     private $templateFingerprint;
-    private $stamp;
 
     public function __construct()
     {
-        $this->uuid = $_ENV['STAMP_UUID'];
         $this->templateStamp = $_ENV['WECOM_TEMPLATE_STAMP'];
         $this->templateFingerprint = $_ENV['WECOM_TEMPLATE_FINGERPRINT'];
-        $this->stamp = new Qstamp($this->uuid, $this->getStampTokenFromCache($this->uuid));
     }
 
     #[Route('/', name: 'app_api')]
@@ -71,22 +67,24 @@ class ApiController extends AbstractController
                 $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
                 $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
 
+                $uuid = $_ENV['STAMP_UUID'];
+                $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
                     $applicant = (string)$data->ApprovalInfo->Applyer->UserId;
                     $spNo = (string)$data->ApprovalInfo->SpNo;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$this->templateStamp":
-                            $this->stamp->pushApplication($this->stamp->applicationIdFromWecom($spNo), $this->stamp->getUid($applicant), $approval->getFieldValue($spNo, '用章次数'));
+                            $stamp->pushApplication($stamp->applicationIdFromWecom($spNo), $stamp->getUid($applicant), $approval->getFieldValue($spNo, '用章次数'));
                             break;
                         case "$this->templateFingerprint":
-                            $this->stamp->addFingerprint($this->stamp->getUid(), $applicant);
+                            $stamp->addFingerprint($stamp->getUid(), $applicant);
                             break;
                     }
                 }
 
                 if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->DelUserItems) {
                     foreach (explode(',', $data->DelUserItems) as $username) {
-                        $this->stamp->delFingerprint($this->stamp->getUid($username));
+                        $stamp->delFingerprint($stamp->getUid($username));
                     }
                 }
             }
@@ -108,19 +106,20 @@ class ApiController extends AbstractController
         $data = str_replace('}"', '}', $data);
         $data = json_decode($data);
         $uuid = $data->uuid;
+        $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
         // dump($data);
         switch ($data->cmd) {
             case 1000:  // startup
-                $this->stamp->setSleepTime();
+                $stamp->setSleepTime();
                 break;
             case 1010:  // fingerprint added
                 $uid = $data->data->userId;
                 if ($data->data->status) {
                     // tag: "用章", tid: 1
                     $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
-                    $contacts->addUsersToTag(8, [$this->stamp->getUsername($uid)]);
+                    $contacts->addUsersToTag(8, [$stamp->getUsername($uid)]);
                 } else {
-                    // $this->stamp->addFingerprint($uid, $username);   // where to get $username? cache?
+                    // $stamp->addFingerprint($uid, $username);   // where to get $username? cache?
                 }
                 break;
             case 1130:  // img uploaded
@@ -128,7 +127,7 @@ class ApiController extends AbstractController
                 $media = new Media($this->getWecomTokenFromCache('APPROVAL'));
                 $mediaId = $media->upload($path, 'image')->media_id;
                 $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
-                $spNo = $this->stamp->applicationIdToWecom($data->data->applicationId);
+                $spNo = $stamp->applicationIdToWecom($data->data->applicationId);
                 $applicant = $approval->getApplicant($spNo);
                 $approver = $approval->getApprovers($spNo);
                 $msg = new Message($this->getWecomTokenFromCache('APPROVAL'));
@@ -187,10 +186,6 @@ class ApiController extends AbstractController
 
     #[Route('/test/{slug}')]
     public function test($slug){
-        $data = $this->stamp->listFingerprints()->getContent();
-        // $data = $this->stamp->delFingerprint(1);
-        // $data = $this->getStampTokenFromCache($this->uuid);
-        dump($data);
         dump($slug);
         return new Response('<body></body>');
     }
