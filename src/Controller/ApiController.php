@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Psr\Log\LoggerInterface;
 use App\wecom\callback\Prpcrypt;
 use App\wecom\callback\WXBizMsgCrypt;
 use Alzee\Qstamp\Qstamp;
@@ -24,12 +23,10 @@ class ApiController extends AbstractController
     private $uuid;
     private $templateStamp;
     private $templateFingerprint;
-    private $logger;
     private $stamp;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct()
     {
-        $this->logger = $logger;
         $this->uuid = $_ENV['STAMP_UUID'];
         $this->templateStamp = $_ENV['WECOM_TEMPLATE_STAMP'];
         $this->templateFingerprint = $_ENV['WECOM_TEMPLATE_FINGERPRINT'];
@@ -79,11 +76,9 @@ class ApiController extends AbstractController
                     $spNo = (string)$data->ApprovalInfo->SpNo;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$this->templateStamp":
-                            // $this->logger->warning("use stamp");
                             $this->stamp->pushApplication($this->stamp->applicationIdFromWecom($spNo), $this->stamp->getUid($applicant), $approval->getFieldValue($spNo, '用章次数'));
                             break;
                         case "$this->templateFingerprint":
-                            // $this->logger->warning("add fingerprint");
                             $this->stamp->addFingerprint($this->stamp->getUid(), $applicant);
                             break;
                     }
