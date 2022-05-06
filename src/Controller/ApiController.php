@@ -39,8 +39,8 @@ class ApiController extends AbstractController
         return new Response('<body></body>');
     }
 
-    #[Route('/wecom/callback', name: 'app_wecom_callback')]
-    public function wecom(Request $request): Response
+    #[Route('/wecom/callback/{corpId}', name: 'app_wecom_callback')]
+    public function wecom($corpId, Request $request): Response
     {
         $query = $request->query;
         $msg_signature= $query->get('msg_signature');
@@ -57,7 +57,7 @@ class ApiController extends AbstractController
         }
         $approval_token = $_ENV['WECOM_CALLBACK_TOKEN'];
         $encodingAesKey = $_ENV['WECOM_CALLBACK_ENCODINGAESKEY'];
-        $corpId = $_ENV['WECOM_CORPID'];
+        // $corpId = $_ENV['WECOM_CORPID'];
 
         $wxcpt = new WXBizMsgCrypt($approval_token, $encodingAesKey, $corpId);
         $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $str, $str1);
