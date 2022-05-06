@@ -219,7 +219,7 @@ class ApiController extends AbstractController
         //    $em->persist($fpr);
         //    $em->flush();
         //}
-        dump($fpr->getId());
+        dump($fpr);
         return new Response('<body></body>');
     }
 }
