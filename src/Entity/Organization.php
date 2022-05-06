@@ -18,7 +18,7 @@ class Organization
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[ORM\OneToMany(mappedBy: 'org_id', targetEntity: Device::class)]
+    #[ORM\OneToMany(mappedBy: 'org', targetEntity: Device::class)]
     private $devices;
 
     #[ORM\OneToMany(mappedBy: 'org', targetEntity: Fingerprint::class)]
