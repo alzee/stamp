@@ -85,8 +85,7 @@ class ApiController extends AbstractController
                     }
                 }
 
-                $tagId = 8;
-                if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->TagId == $tagId && $data->DelUserItems) {
+                if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->TagId == $device->getTagId() && $data->DelUserItems) {
                     foreach (explode(',', $data->DelUserItems) as $username) {
                         $stamp->delFingerprint($stamp->getUid($username));
                     }
@@ -101,7 +100,7 @@ class ApiController extends AbstractController
     }
 
     #[Route('/qstamp/callback', name: 'app_qstamp_callback')]
-    public function qstamp(Request $request): Response
+    public function qstamp(Request $request, ManagerRegistry $doctrine): Response
     {
         $data = $request->getContent();
         $data = stripcslashes($data);
@@ -111,6 +110,7 @@ class ApiController extends AbstractController
         $data = json_decode($data);
         $uuid = $data->uuid;
         $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
+        $device = $doctrine->getRepository(Device::class)->findOneByUUID($uuid);
         // dump($data);
         switch ($data->cmd) {
             case 1000:  // startup
@@ -120,8 +120,7 @@ class ApiController extends AbstractController
                 $uid = $data->data->userId;
                 if ($data->data->status) {
                     $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
-                    $tagId = 8; // tag: "用章", id: 8
-                    $contacts->addUsersToTag($tagId, [$stamp->getUsername($uid)]);
+                    $contacts->addUsersToTag($device->getTagId(), [$stamp->getUsername($uid)]);
                 } else {
                     // $stamp->addFingerprint($uid, $username);   // where to get $username? cache?
                 }
@@ -190,6 +189,11 @@ class ApiController extends AbstractController
 
     #[Route('/test/{slug}')]
     public function test($slug, Request $request, ManagerRegistry $doctrine){
+        $corpId = 'wwff49ac450c27cabe';
+        $wecom = $doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
+        $uuid = '0X3600303238511239343734';
+        $device = $doctrine->getRepository(Device::class)->findOneByUUID($uuid);
+        dump($device);
         return new Response('<body></body>');
     }
 }

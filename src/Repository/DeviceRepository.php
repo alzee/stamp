@@ -57,6 +57,16 @@ class DeviceRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findOneByUUID($value): ?Device
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.uuid = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     // /**
     //  * @return Device[] Returns an array of Device objects
     //  */
