@@ -17,7 +17,7 @@ class Device
     private $uuid;
 
     #[ORM\ManyToOne(targetEntity: organization::class, inversedBy: 'devices')]
-    private $org_id;
+    private $org;
 
     public function getId(): ?int
     {
@@ -36,14 +36,14 @@ class Device
         return $this;
     }
 
-    public function getOrgId(): ?organization
+    public function getOrg(): ?organization
     {
-        return $this->org_id;
+        return $this->org;
     }
 
-    public function setOrgId(?organization $org_id): self
+    public function setOrg(?organization $org): self
     {
-        $this->org_id = $org_id;
+        $this->org = $org;
 
         return $this;
     }

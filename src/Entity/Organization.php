@@ -21,9 +21,13 @@ class Organization
     #[ORM\OneToMany(mappedBy: 'org_id', targetEntity: Device::class)]
     private $devices;
 
+    #[ORM\OneToMany(mappedBy: 'org', targetEntity: Fingerprint::class)]
+    private $fingerprints;
+
     public function __construct()
     {
         $this->devices = new ArrayCollection();
+        $this->fingerprints = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -67,6 +71,36 @@ class Organization
             // set the owning side to null (unless already changed)
             if ($device->getOrgId() === $this) {
                 $device->setOrgId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Fingerprint>
+     */
+    public function getFingerprints(): Collection
+    {
+        return $this->fingerprints;
+    }
+
+    public function addFingerprint(Fingerprint $fingerprint): self
+    {
+        if (!$this->fingerprints->contains($fingerprint)) {
+            $this->fingerprints[] = $fingerprint;
+            $fingerprint->setOrg($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFingerprint(Fingerprint $fingerprint): self
+    {
+        if ($this->fingerprints->removeElement($fingerprint)) {
+            // set the owning side to null (unless already changed)
+            if ($fingerprint->getOrg() === $this) {
+                $fingerprint->setOrg(null);
             }
         }
 
