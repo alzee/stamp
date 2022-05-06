@@ -131,11 +131,12 @@ class ApiController extends AbstractController
                 break;
             case 1010:  // fingerprint added
                 $uid = $data->data->userId;
+                $fpr = $doctrine->getRepository(Fingerprint::class)->find($uid);
                 if ($data->data->status) {
                     $contacts = new Contacts($this->getWecomTokenFromCache($corpId, 'contacts'));
-                    $contacts->addUsersToTag($device->getTagId(), [$stamp->getUsername($uid)]);
+                    $contacts->addUsersToTag($device->getTagId(), [$fpr->getUsername()]);
                 } else {
-                    // $stamp->addFingerprint($uid, $username);   // where to get $username? cache?
+                    $stamp->addFingerprint($uid, $fpr->getUsername());
                 }
                 break;
             case 1130:  // img uploaded
@@ -205,10 +206,19 @@ class ApiController extends AbstractController
 
     #[Route('/test/{slug}')]
     public function test($slug, Request $request, ManagerRegistry $doctrine){
-        $username = 'te4st';
+        $username = 'te6st';
         $org = $doctrine->getRepository(Organization::class)->find(1);
         $fpr = $doctrine->getRepository(Fingerprint::class)->findOneByUsername($username);
-        // $wecom = $doctrine->getRepository(Wecom::class)->findOneByOrg($device->getOrg());
+        $device = $doctrine->getRepository(Device::class)->find(1);
+        //if (is_null($fpr)) {
+        //    $em = $doctrine->getManager();
+        //    $fpr = new Fingerprint();
+        //    $fpr->setUsername($username);
+        //    $fpr->setOrg($org);
+        //    $fpr->setDevice($device);
+        //    $em->persist($fpr);
+        //    $em->flush();
+        //}
         dump($fpr->getId());
         return new Response('<body></body>');
     }

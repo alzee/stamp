@@ -1,25 +1,5 @@
-demand:
-  - 用印次数
-  - 时效 30 min
-  - 拍照同步至企业微信
-  - 审核模板不同业务对应不同审核人
-
 todo:
-  迁移:
-  tagId: 8
-  credentials:
-  callbacks:
-    - approval
-    - contacts
-  contacts:
-    - API编辑通讯录
-  approval template:
-    removal:
-      - 印章类型
-      - 用印日期
-    addition:
-      - 用章次数
-    workflow:
-      - branchs
+  - device->findOneByOrg() what if a organization have more than one device?
+  - fpr findOneByUsername() should have a org para;
 
 # vim:ft=yaml
