@@ -16,6 +16,10 @@ use Alzee\Fwc\Message;
 use Alzee\Fwc\Media;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
+use App\Entity\Device;
+use App\Entity\Organization;
+use App\Entity\Fingerprint;
+use App\Entity\Wecom;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -48,7 +52,6 @@ class ApiController extends AbstractController
         }
         $approval_token = $_ENV['WECOM_CALLBACK_TOKEN'];
         $encodingAesKey = $_ENV['WECOM_CALLBACK_ENCODINGAESKEY'];
-        // $corpId = $_ENV['WECOM_CORPID'];
 
         $wxcpt = new WXBizMsgCrypt($approval_token, $encodingAesKey, $corpId);
         $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $str, $str1);
