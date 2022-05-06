@@ -47,6 +47,16 @@ class FingerprintRepository extends ServiceEntityRepository
         }
     }
 
+    public function findOneByUsername($value): ?Fingerprint
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.username = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     // /**
     //  * @return Fingerprint[] Returns an array of Fingerprint objects
     //  */

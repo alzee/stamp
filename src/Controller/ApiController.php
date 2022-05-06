@@ -19,6 +19,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Device;
 use App\Entity\Fingerprint;
+use App\Entity\Organization;
 use App\Entity\Wecom;
 
 #[Route('/api')]
@@ -72,21 +73,32 @@ class ApiController extends AbstractController
                 $uuid = $device->getUuid();
                 $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
-                    $applicant = (string)$data->ApprovalInfo->Applyer->UserId;
+                    $username = (string)$data->ApprovalInfo->Applyer->UserId;
+                    $fpr = $doctrine->getRepository(Fingerprint::class)->findOneByUsername($username);
                     $spNo = (string)$data->ApprovalInfo->SpNo;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$wecom->getStampingTemplateId()":
-                            $stamp->pushApplication($stamp->applicationIdFromWecom($spNo), $stamp->getUid($applicant), $approval->getFieldValue($spNo, '用章次数'));
+                            $stamp->pushApplication($stamp->applicationIdFromWecom($spNo), $fpr->getId(), $approval->getFieldValue($spNo, '用章次数'));
                             break;
                         case "$wecom->getAddingFprTemplateId()":
-                            $stamp->addFingerprint($stamp->getUid(), $applicant);
+                            if (is_null($fpr)) {
+                                $em = $doctrine->getManager();
+                                $fpr = new Fingerprint();
+                                $fpr->setUsername($username);
+                                $fpr->setOrg($wecom->getOrg());
+                                $fpr->setDevice($device);
+                                $em->persist($fpr);
+                                $em->flush();
+                            }
+                            $stamp->addFingerprint($fpr->getId(), $username);
                             break;
                     }
                 }
 
                 if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->TagId == $device->getTagId() && $data->DelUserItems) {
-                    foreach (explode(',', $data->DelUserItems) as $username) {
-                        $stamp->delFingerprint($stamp->getUid($username));
+                    foreach (explode(',', $data->DelUserItems) as $user) {
+                        $fpr = $doctrine->getRepository(Fingerprint::class)->findOneByUsername($user);
+                        $stamp->delFingerprint($fpr->getId());
                     }
                 }
             }
@@ -193,10 +205,11 @@ class ApiController extends AbstractController
 
     #[Route('/test/{slug}')]
     public function test($slug, Request $request, ManagerRegistry $doctrine){
-        $uuid = '0X3600303238511239343734';
-        $device = $doctrine->getRepository(Device::class)->findOneByUUID($uuid);
+        $username = 'te4st';
+        $org = $doctrine->getRepository(Organization::class)->find(1);
+        $fpr = $doctrine->getRepository(Fingerprint::class)->findOneByUsername($username);
         // $wecom = $doctrine->getRepository(Wecom::class)->findOneByOrg($device->getOrg());
-        dump($device);
+        dump($fpr->getId());
         return new Response('<body></body>');
     }
 }
