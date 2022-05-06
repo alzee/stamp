@@ -195,8 +195,8 @@ class ApiController extends AbstractController
     public function test($slug, Request $request, ManagerRegistry $doctrine){
         $uuid = '0X3600303238511239343734';
         $device = $doctrine->getRepository(Device::class)->findOneByUUID($uuid);
-        $wecom = $doctrine->getRepository(Wecom::class)->findOneByOrg($device->getOrg());
-        dump($wecom);
+        // $wecom = $doctrine->getRepository(Wecom::class)->findOneByOrg($device->getOrg());
+        dump($device);
         return new Response('<body></body>');
     }
 }
