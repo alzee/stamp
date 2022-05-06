@@ -20,13 +20,8 @@ use Symfony\Contracts\Cache\ItemInterface;
 #[Route('/api')]
 class ApiController extends AbstractController
 {
-    private $templateStamp;
-    private $templateFingerprint;
-
     public function __construct()
     {
-        $this->templateStamp = $_ENV['WECOM_TEMPLATE_STAMP'];
-        $this->templateFingerprint = $_ENV['WECOM_TEMPLATE_FINGERPRINT'];
     }
 
     #[Route('/', name: 'app_api')]
@@ -72,11 +67,13 @@ class ApiController extends AbstractController
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
                     $applicant = (string)$data->ApprovalInfo->Applyer->UserId;
                     $spNo = (string)$data->ApprovalInfo->SpNo;
+                    $templateStamp = $_ENV['WECOM_TEMPLATE_STAMP'];
+                    $templateFingerprint = $_ENV['WECOM_TEMPLATE_FINGERPRINT'];
                     switch ((string)$data->ApprovalInfo->TemplateId) {
-                        case "$this->templateStamp":
+                        case "$templateStamp":
                             $stamp->pushApplication($stamp->applicationIdFromWecom($spNo), $stamp->getUid($applicant), $approval->getFieldValue($spNo, '用章次数'));
                             break;
-                        case "$this->templateFingerprint":
+                        case "$templateFingerprint":
                             $stamp->addFingerprint($stamp->getUid(), $applicant);
                             break;
                     }
