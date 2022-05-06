@@ -140,6 +140,7 @@ class ApiController extends AbstractController
                     $contacts = new Contacts($this->getWecomTokenFromCache($corpId, 'contacts'));
                     $contacts->addUsersToTag($device->getTagId(), [$fpr->getUsername()]);
                 } else {
+                    // try again if failed, loop until success or press OK button on device to abort
                     $stamp->addFingerprint($uid, $fpr->getUsername());
                 }
                 break;
