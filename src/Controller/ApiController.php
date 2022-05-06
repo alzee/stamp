@@ -68,18 +68,18 @@ class ApiController extends AbstractController
                 $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
                 $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
 
-                $uuid = $_ENV['STAMP_UUID'];
+                $device = $doctrine->getRepository(Device::class)->findOneByOrg($wecom->getOrg());
+
+                $uuid = $device->getUuid();
                 $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
                     $applicant = (string)$data->ApprovalInfo->Applyer->UserId;
                     $spNo = (string)$data->ApprovalInfo->SpNo;
-                    $templateStamp = $_ENV['WECOM_TEMPLATE_STAMP'];
-                    $templateFingerprint = $_ENV['WECOM_TEMPLATE_FINGERPRINT'];
                     switch ((string)$data->ApprovalInfo->TemplateId) {
-                        case "$templateStamp":
+                        case "$wecom->getStampingTemplateId()":
                             $stamp->pushApplication($stamp->applicationIdFromWecom($spNo), $stamp->getUid($applicant), $approval->getFieldValue($spNo, '用章次数'));
                             break;
-                        case "$templateFingerprint":
+                        case "$wecom->getAddingFprTemplateId()":
                             $stamp->addFingerprint($stamp->getUid(), $applicant);
                             break;
                     }
@@ -190,11 +190,6 @@ class ApiController extends AbstractController
 
     #[Route('/test/{slug}')]
     public function test($slug, Request $request, ManagerRegistry $doctrine){
-        $em = $doctrine->getManager();
-        $corpId = 'ww598d275367f9ce0a';
-        $device = $doctrine->getRepository(Device::class)->findOneByOrg(1);
-        dump($slug);
-        dump($device);
         return new Response('<body></body>');
     }
 }
