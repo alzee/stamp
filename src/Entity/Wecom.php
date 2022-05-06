@@ -34,7 +34,7 @@ class Wecom
     #[ORM\Column(type: 'string', length: 255)]
     private $addingFprTemplateId;
 
-    #[ORM\OneToOne(inversedBy: 'wecom', targetEntity: organization::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'wecom', targetEntity: Organization::class, cascade: ['persist', 'remove'])]
     private $org;
 
     public function getId(): ?int

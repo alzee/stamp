@@ -47,6 +47,16 @@ class WecomRepository extends ServiceEntityRepository
         }
     }
 
+    public function findOneByCorpId($value): ?Wecom
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.corpId= :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     // /**
     //  * @return Wecom[] Returns an array of Wecom objects
     //  */

@@ -16,6 +16,7 @@ use Alzee\Fwc\Message;
 use Alzee\Fwc\Media;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Device;
 use App\Entity\Organization;
 use App\Entity\Fingerprint;
@@ -35,7 +36,7 @@ class ApiController extends AbstractController
     }
 
     #[Route('/wecom/callback/{corpId}', name: 'app_wecom_callback')]
-    public function wecom($corpId, Request $request): Response
+    public function wecom($corpId, Request $request, ManagerRegistry $doctrine): Response
     {
         $query = $request->query;
         $msg_signature= $query->get('msg_signature');
@@ -50,8 +51,10 @@ class ApiController extends AbstractController
             $str = $query->get('echostr');
             $str1 = $str;
         }
-        $approval_token = $_ENV['WECOM_CALLBACK_TOKEN'];
-        $encodingAesKey = $_ENV['WECOM_CALLBACK_ENCODINGAESKEY'];
+        $wecom = $doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
+
+        $approval_token = $wecom->getCallbackToken();
+        $encodingAesKey = $wecom->getCallbackAESKey();
 
         $wxcpt = new WXBizMsgCrypt($approval_token, $encodingAesKey, $corpId);
         $errCode = $wxcpt->VerifyURL($msg_signature, $timestamp, $nonce, $str, $str1);
@@ -186,8 +189,12 @@ class ApiController extends AbstractController
     }
 
     #[Route('/test/{slug}')]
-    public function test($slug){
+    public function test($slug, Request $request, ManagerRegistry $doctrine){
+        $em = $doctrine->getManager();
+        $corpId = 'ww598d275367f9ce0a';
+        $wecom = $doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
         dump($slug);
+        dump($wecom->getCallbackAESKey());
         return new Response('<body></body>');
     }
 }
