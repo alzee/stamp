@@ -21,12 +21,16 @@ use App\Entity\Device;
 use App\Entity\Fingerprint;
 use App\Entity\Organization;
 use App\Entity\Wecom;
+use App\Repository\WecomRepository;
 
 #[Route('/api')]
 class ApiController extends AbstractController
 {
-    public function __construct()
+    private $doctrine;
+
+    public function __construct(ManagerRegistry $doctrine)
     {
+        $this->doctrine = $doctrine;
     }
 
     #[Route('/', name: 'app_api')]
@@ -36,7 +40,7 @@ class ApiController extends AbstractController
     }
 
     #[Route('/wecom/callback/{corpId}', name: 'app_wecom_callback')]
-    public function wecom($corpId, Request $request, ManagerRegistry $doctrine): Response
+    public function wecom($corpId, Request $request): Response
     {
         $query = $request->query;
         $msg_signature= $query->get('msg_signature');
@@ -51,7 +55,7 @@ class ApiController extends AbstractController
             $str = $query->get('echostr');
             $str1 = $str;
         }
-        $wecom = $doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
+        $wecom = $this->doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
 
         $approval_token = $wecom->getCallbackToken();
         $encodingAesKey = $wecom->getCallbackAESKey();
@@ -68,13 +72,13 @@ class ApiController extends AbstractController
                 $contacts = new Contacts($this->getWecomTokenFromCache($corpId, 'contacts'));
                 $approval = new Approval($this->getWecomTokenFromCache($corpId, 'approval'));
 
-                $device = $doctrine->getRepository(Device::class)->findOneByOrg($wecom->getOrg());
+                $device = $this->doctrine->getRepository(Device::class)->findOneByOrg($wecom->getOrg());
 
                 $uuid = $device->getUuid();
                 $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
                     $username = (string)$data->ApprovalInfo->Applyer->UserId;
-                    $fpr = $doctrine->getRepository(Fingerprint::class)->findOneByUsername($username);
+                    $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByUsername($username);
                     $spNo = (string)$data->ApprovalInfo->SpNo;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case "$wecom->getStampingTemplateId()":
@@ -82,7 +86,7 @@ class ApiController extends AbstractController
                             break;
                         case "$wecom->getAddingFprTemplateId()":
                             if (is_null($fpr)) {
-                                $em = $doctrine->getManager();
+                                $em = $this->doctrine->getManager();
                                 $fpr = new Fingerprint();
                                 $fpr->setUsername($username);
                                 $fpr->setOrg($wecom->getOrg());
@@ -97,7 +101,7 @@ class ApiController extends AbstractController
 
                 if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->TagId == $device->getTagId() && $data->DelUserItems) {
                     foreach (explode(',', $data->DelUserItems) as $user) {
-                        $fpr = $doctrine->getRepository(Fingerprint::class)->findOneByUsername($user);
+                        $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByUsername($user);
                         $stamp->delFingerprint($fpr->getId());
                     }
                 }
@@ -111,7 +115,7 @@ class ApiController extends AbstractController
     }
 
     #[Route('/qstamp/callback', name: 'app_qstamp_callback')]
-    public function qstamp(Request $request, ManagerRegistry $doctrine): Response
+    public function qstamp(Request $request): Response
     {
         $data = $request->getContent();
         $data = stripcslashes($data);
@@ -121,8 +125,8 @@ class ApiController extends AbstractController
         $data = json_decode($data);
         $uuid = $data->uuid;
         $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
-        $device = $doctrine->getRepository(Device::class)->findOneByUUID($uuid);
-        $wecom = $doctrine->getRepository(Wecom::class)->findOneByOrg($device->getOrg());
+        $device = $this->doctrine->getRepository(Device::class)->findOneByUUID($uuid);
+        $wecom = $this->doctrine->getRepository(Wecom::class)->findOneByOrg($device->getOrg());
         $corpId = $wecom->getCorpId();
         // dump($data);
         switch ($data->cmd) {
@@ -131,7 +135,7 @@ class ApiController extends AbstractController
                 break;
             case 1010:  // fingerprint added
                 $uid = $data->data->userId;
-                $fpr = $doctrine->getRepository(Fingerprint::class)->find($uid);
+                $fpr = $this->doctrine->getRepository(Fingerprint::class)->find($uid);
                 if ($data->data->status) {
                     $contacts = new Contacts($this->getWecomTokenFromCache($corpId, 'contacts'));
                     $contacts->addUsersToTag($device->getTagId(), [$fpr->getUsername()]);
@@ -170,9 +174,9 @@ class ApiController extends AbstractController
             $cache->clear("WECOM_${corpId}_${app}_TOKEN");
         }
 
-        $token = $cache->get("WECOM_${corpId}_${app}_TOKEN", function (ItemInterface $item, ManagerRegistry $doctrine) use ($corpId, $app) {
+        $token = $cache->get("WECOM_${corpId}_${app}_TOKEN", function (ItemInterface $item) use ($corpId, $app) {
             $item->expiresAfter(7200);
-            $wecom = $doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
+            $wecom = $this->doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
             $fwc = new Fwc();
             $secret = match ($app) {
                 'contacts' => $wecom->getContactsSecret(),
@@ -205,21 +209,10 @@ class ApiController extends AbstractController
     }
 
     #[Route('/test/{slug}')]
-    public function test($slug, Request $request, ManagerRegistry $doctrine){
-        $username = 'te6st';
-        $org = $doctrine->getRepository(Organization::class)->find(1);
-        $fpr = $doctrine->getRepository(Fingerprint::class)->findOneByUsername($username);
-        $device = $doctrine->getRepository(Device::class)->find(1);
-        //if (is_null($fpr)) {
-        //    $em = $doctrine->getManager();
-        //    $fpr = new Fingerprint();
-        //    $fpr->setUsername($username);
-        //    $fpr->setOrg($org);
-        //    $fpr->setDevice($device);
-        //    $em->persist($fpr);
-        //    $em->flush();
-        //}
-        dump($fpr);
+    public function test($slug, Request $request){
+        $device = $this->doctrine->getRepository(Device::class)->find(1);
+        $token = $this->getStampTokenFromCache($device->getUuid());
+        // dump($token);
         return new Response('<body></body>');
     }
 }
