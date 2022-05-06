@@ -18,7 +18,6 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Device;
-use App\Entity\Organization;
 use App\Entity\Fingerprint;
 use App\Entity\Wecom;
 
@@ -65,8 +64,8 @@ class ApiController extends AbstractController
                 $data = simplexml_load_string($arr[1], 'SimpleXMLElement', LIBXML_NOCDATA);
                 // dump($data);
 
-                $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
-                $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
+                $contacts = new Contacts($this->getWecomTokenFromCache($corpId, 'contacts'));
+                $approval = new Approval($this->getWecomTokenFromCache($corpId, 'approval'));
 
                 $device = $doctrine->getRepository(Device::class)->findOneByOrg($wecom->getOrg());
 
@@ -111,6 +110,8 @@ class ApiController extends AbstractController
         $uuid = $data->uuid;
         $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
         $device = $doctrine->getRepository(Device::class)->findOneByUUID($uuid);
+        $wecom = $doctrine->getRepository(Wecom::class)->findOneByOrg($device->getOrg());
+        $corpId = $wecom->getCorpId();
         // dump($data);
         switch ($data->cmd) {
             case 1000:  // startup
@@ -119,7 +120,7 @@ class ApiController extends AbstractController
             case 1010:  // fingerprint added
                 $uid = $data->data->userId;
                 if ($data->data->status) {
-                    $contacts = new Contacts($this->getWecomTokenFromCache('CONTACTS'));
+                    $contacts = new Contacts($this->getWecomTokenFromCache($corpId, 'contacts'));
                     $contacts->addUsersToTag($device->getTagId(), [$stamp->getUsername($uid)]);
                 } else {
                     // $stamp->addFingerprint($uid, $username);   // where to get $username? cache?
@@ -127,13 +128,13 @@ class ApiController extends AbstractController
                 break;
             case 1130:  // img uploaded
                 $path = $_ENV['IMG_DIR_PREFIX'] . preg_replace('/\/group\d+/', '', $data->data->path);
-                $media = new Media($this->getWecomTokenFromCache('APPROVAL'));
+                $media = new Media($this->getWecomTokenFromCache($corpId, 'approval'));
                 $mediaId = $media->upload($path, 'image')->media_id;
-                $approval = new Approval($this->getWecomTokenFromCache('APPROVAL'));
+                $approval = new Approval($this->getWecomTokenFromCache($corpId, 'approval'));
                 $spNo = $stamp->applicationIdToWecom($data->data->applicationId);
                 $applicant = $approval->getApplicant($spNo);
                 $approver = $approval->getApprovers($spNo);
-                $msg = new Message($this->getWecomTokenFromCache('APPROVAL'));
+                $msg = new Message($this->getWecomTokenFromCache($corpId, 'approval'));
                 // $data = $msg->sendTextTo("$applicant|$approver", "test", '3010040');
                 $data = $msg->sendImgTo("$applicant|$approver", $mediaId, '3010040');
                 break;
@@ -142,25 +143,28 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @param string $app 'CONTACTS | APPROVAL'
+     * @param string $corpId
+     * @param string $app 'contacts | approval'
      *
      * @return string
      *
      */
-    public function getWecomTokenFromCache($app, $refresh = false)
+    public function getWecomTokenFromCache($corpId, $app, $refresh = false)
     {
         $cache = new FilesystemAdapter();
 
         if ($refresh) {
-            $cache->clear("WECOM_${app}_TOKEN");
+            $cache->clear("WECOM_${corpId}_${app}_TOKEN");
         }
 
-        $token = $cache->get("WECOM_${app}_TOKEN", function (ItemInterface $item) use ($app) {
+        $token = $cache->get("WECOM_${corpId}_${app}_TOKEN", function (ItemInterface $item, ManagerRegistry $doctrine) use ($corpId, $app) {
             $item->expiresAfter(7200);
-
+            $wecom = $doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
             $fwc = new Fwc();
-            $corpId = $_ENV['WECOM_CORPID'];
-            $secret = $_ENV["WECOM_${app}_SECRET"];
+            $secret = match ($app) {
+                'contacts' => $wecom->getContactsSecret(),
+                'approval' => $wecom->getApprovalSecret(),
+            };
             return $fwc->getAccessToken($corpId, $secret);
         });
 
@@ -189,11 +193,10 @@ class ApiController extends AbstractController
 
     #[Route('/test/{slug}')]
     public function test($slug, Request $request, ManagerRegistry $doctrine){
-        $corpId = 'wwff49ac450c27cabe';
-        $wecom = $doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
         $uuid = '0X3600303238511239343734';
         $device = $doctrine->getRepository(Device::class)->findOneByUUID($uuid);
-        dump($device);
+        $wecom = $doctrine->getRepository(Wecom::class)->findOneByOrg($device->getOrg());
+        dump($wecom);
         return new Response('<body></body>');
     }
 }
