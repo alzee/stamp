@@ -19,6 +19,12 @@ class Device
     #[ORM\ManyToOne(targetEntity: organization::class, inversedBy: 'devices')]
     private $org;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $name;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $tagId;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +50,30 @@ class Device
     public function setOrg(?organization $org): self
     {
         $this->org = $org;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getTagId(): ?int
+    {
+        return $this->tagId;
+    }
+
+    public function setTagId(?int $tagId): self
+    {
+        $this->tagId = $tagId;
 
         return $this;
     }
