@@ -24,6 +24,9 @@ class Organization
     #[ORM\OneToMany(mappedBy: 'org', targetEntity: Fingerprint::class)]
     private $fingerprints;
 
+    #[ORM\OneToOne(mappedBy: 'org', targetEntity: Wecom::class, cascade: ['persist', 'remove'])]
+    private $wecom;
+
     public function __construct()
     {
         $this->devices = new ArrayCollection();
@@ -103,6 +106,28 @@ class Organization
                 $fingerprint->setOrg(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getWecom(): ?Wecom
+    {
+        return $this->wecom;
+    }
+
+    public function setWecom(?Wecom $wecom): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($wecom === null && $this->wecom !== null) {
+            $this->wecom->setOrg(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($wecom !== null && $wecom->getOrg() !== $this) {
+            $wecom->setOrg($this);
+        }
+
+        $this->wecom = $wecom;
 
         return $this;
     }
