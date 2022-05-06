@@ -185,12 +185,13 @@ class ApiController extends AbstractController
         return $token;
     }
 
-    #[Route('/test')]
-    public function test(){
+    #[Route('/test/{slug}')]
+    public function test($slug){
         $data = $this->stamp->listFingerprints()->getContent();
         // $data = $this->stamp->delFingerprint(1);
         // $data = $this->getStampTokenFromCache($this->uuid);
         dump($data);
+        dump($slug);
         return new Response('<body></body>');
     }
 }
