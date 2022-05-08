@@ -21,7 +21,6 @@ use App\Entity\Device;
 use App\Entity\Fingerprint;
 use App\Entity\Organization;
 use App\Entity\Wecom;
-use App\Repository\WecomRepository;
 
 #[Route('/api')]
 class ApiController extends AbstractController
