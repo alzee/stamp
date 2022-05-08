@@ -102,7 +102,9 @@ class ApiController extends AbstractController
                 if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->TagId == $device->getTagId() && $data->DelUserItems) {
                     foreach (explode(',', $data->DelUserItems) as $user) {
                         $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByUsername($user);
-                        $stamp->delFingerprint($fpr->getId());
+                        if (! is_null($fpr)) {
+                            $stamp->delFingerprint($fpr->getId());
+                        }
                     }
                 }
             }
@@ -209,11 +211,12 @@ class ApiController extends AbstractController
         return $token;
     }
 
-    #[Route('/test/{slug}')]
-    public function test($slug, Request $request){
-        $device = $this->doctrine->getRepository(Device::class)->find(1);
-        $token = $this->getStampTokenFromCache($device->getUuid());
-        // dump($token);
+    #[Route('/test')]
+    public function test(Request $request){
+        $uuid='0X3600303238511239343734';
+        $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
+        $data = $stamp->listFingerprints();
+        dump($data->getContent());
         return new Response('<body></body>');
     }
 }
