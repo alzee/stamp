@@ -81,10 +81,10 @@ class ApiController extends AbstractController
                     $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByUsername($username);
                     $spNo = (string)$data->ApprovalInfo->SpNo;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
-                        case "$wecom->getStampingTemplateId()":
+                        case $wecom->getStampingTemplateId():
                             $stamp->pushApplication($stamp->applicationIdFromWecom($spNo), $fpr->getId(), $approval->getFieldValue($spNo, '用章次数'));
                             break;
-                        case "$wecom->getAddingFprTemplateId()":
+                        case $wecom->getAddingFprTemplateId():
                             if (is_null($fpr)) {
                                 $em = $this->doctrine->getManager();
                                 $fpr = new Fingerprint();
@@ -133,7 +133,7 @@ class ApiController extends AbstractController
         // dump($data);
         switch ($data->cmd) {
             case 1000:  // startup
-                $stamp->setSleepTime();
+                $stamp->setSleepTime(30);
                 break;
             case 1010:  // fingerprint added
                 $uid = $data->data->userId;
