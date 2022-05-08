@@ -1,5 +1,5 @@
 todo:
   - device->findOneByOrg() what if a organization have more than one device?
-  - fpr findOneByUsername() should have a org or device para;
+  - fpr findOneByUsername() should have a device para;
 
 # vim:ft=yaml
