@@ -78,7 +78,7 @@ class ApiController extends AbstractController
                 $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
                 if ($data->Event == 'sys_approval_change' && (string)$data->ApprovalInfo->StatuChangeEvent === "2") {
                     $username = (string)$data->ApprovalInfo->Applyer->UserId;
-                    $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByUsername($username);
+                    $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByDeviceAndUsername($device, $username);
                     $spNo = (string)$data->ApprovalInfo->SpNo;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case $wecom->getStampingTemplateId():
@@ -101,7 +101,7 @@ class ApiController extends AbstractController
 
                 if ($data->Event == 'change_contact' && $data->ChangeType == 'update_tag' && $data->TagId == $device->getTagId() && $data->DelUserItems) {
                     foreach (explode(',', $data->DelUserItems) as $user) {
-                        $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByUsername($user);
+                        $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByDeviceAndUsername($device, $user);
                         if (! is_null($fpr)) {
                             $stamp->delFingerprint($fpr->getId());
                         }
@@ -213,10 +213,9 @@ class ApiController extends AbstractController
 
     #[Route('/test')]
     public function test(Request $request){
-        $uuid='0X3600303238511239343734';
-        $stamp = new Qstamp($uuid, $this->getStampTokenFromCache($uuid));
-        $data = $stamp->listFingerprints();
-        dump($data->getContent());
+        $device = $this->doctrine->getRepository(Device::class)->find(2);
+        $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByDeviceAndUsername($device, 'BaYue');
+        dump($fpr);
         return new Response('<body></body>');
     }
 }

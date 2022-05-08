@@ -47,11 +47,13 @@ class FingerprintRepository extends ServiceEntityRepository
         }
     }
 
-    public function findOneByUsername($value): ?Fingerprint
+    public function findOneByDeviceAndUsername($device, $username): ?Fingerprint
     {
         return $this->createQueryBuilder('f')
-            ->andWhere('f.username = :val')
-            ->setParameter('val', $value)
+            ->andWhere('f.device = :device')
+            ->andWhere('f.username = :username')
+            ->setParameter('device', $device)
+            ->setParameter('username', $username)
             ->getQuery()
             ->getOneOrNullResult()
         ;
