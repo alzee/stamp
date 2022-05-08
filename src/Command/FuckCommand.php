@@ -18,10 +18,10 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 
 #[AsCommand(
-    name: 'test',
+    name: 'fuck',
     description: 'Add a short description for your command',
 )]
-class TestCommand extends Command
+class FuckCommand extends Command
 {
     private $em;
 
@@ -34,28 +34,29 @@ class TestCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+            // ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
+            // ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        // $arg1 = $input->getArgument('arg1');
 
         $device = $this->em->getRepository(Device::class)->find(2);
-        dump($device);
+        $org = $this->em->getRepository(Organization::class)->find(1);
+        // dump($org);
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
-        }
+        // if ($arg1) {
+        //     $io->note(sprintf('You passed an argument: %s', $arg1));
+        // }
 
-        if ($input->getOption('option1')) {
-            // ...
-        }
+        // if ($input->getOption('option1')) {
+        //     // ...
+        // }
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $io->success($org->getId() . ' ' . $org->getName());
 
         return Command::SUCCESS;
     }
