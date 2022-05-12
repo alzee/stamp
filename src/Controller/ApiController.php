@@ -137,6 +137,7 @@ class ApiController extends AbstractController
             case 1010:  // fingerprint added
                 $uid = $data->data->userId;
                 $fpr = $this->doctrine->getRepository(Fingerprint::class)->find($uid);
+                if (is_null($fpr)) break;
                 if ($data->data->status) {
                     $contacts = new Contacts($this->getWecomTokenFromCache($corpId, 'contacts'));
                     $contacts->addUsersToTag($device->getTagId(), [$fpr->getUsername()]);
@@ -146,9 +147,13 @@ class ApiController extends AbstractController
                 }
                 break;
             case 1130:  // img uploaded
+                if (is_null($data->data->applicationId)) break;
+                // Upload to wecom
                 $path = $_ENV['IMG_DIR_PREFIX'] . preg_replace('/\/group\d+/', '', $data->data->path);
                 $media = new Media($this->getWecomTokenFromCache($corpId, 'approval'));
                 $mediaId = $media->upload($path, 'image')->media_id;
+
+                // Send images message to wecom chat
                 $approval = new Approval($this->getWecomTokenFromCache($corpId, 'approval'));
                 $spNo = $stamp->applicationIdToWecom($data->data->applicationId);
                 $applicant = $approval->getApplicant($spNo);
