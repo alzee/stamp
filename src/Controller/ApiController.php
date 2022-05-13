@@ -14,7 +14,7 @@ use Alzee\Fwc\Contacts;
 use Alzee\Fwc\Approval;
 use Alzee\Fwc\Message;
 use Alzee\Fwc\Media;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Device;
@@ -135,7 +135,7 @@ class ApiController extends AbstractController
                 $stamp->setSleepTime(30);
                 break;
             case 1010:  // fingerprint added
-                $cache = new FilesystemAdapter();
+                $cache = new RedisAdapter(RedisAdapter::createConnection('redis://localhost'));
                 if ($cache->getItem("STAMP_${uuid}_JUST_CALLED")->isHit()) break;
 
                 $cache->get("STAMP_${uuid}_JUST_CALLED", function (ItemInterface $item){
@@ -183,7 +183,7 @@ class ApiController extends AbstractController
      */
     public function getWecomTokenFromCache($corpId, $app, $refresh = false)
     {
-        $cache = new FilesystemAdapter();
+        $cache = new RedisAdapter(RedisAdapter::createConnection('redis://localhost'));
 
         if ($refresh) {
             $cache->clear("WECOM_${corpId}_${app}_TOKEN");
@@ -205,7 +205,7 @@ class ApiController extends AbstractController
 
     public function getStampTokenFromCache($uuid, $refresh = false)
     {
-        $cache = new FilesystemAdapter();
+        $cache = new RedisAdapter(RedisAdapter::createConnection('redis://localhost'));
 
         if ($refresh) {
             $cache->clear("STAMP_${uuid}_TOKEN");
