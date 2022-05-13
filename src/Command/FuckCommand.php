@@ -18,6 +18,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 #[AsCommand(
     name: 'fuck',
@@ -58,7 +59,7 @@ class FuckCommand extends Command
         //     // ...
         // }
 
-        $cache = new FilesystemAdapter();
+        $cache = new RedisAdapter(RedisAdapter::createConnection('redis://localhost'));
 
         $cache->get('word', function (ItemInterface $item) {
             $item->expiresAfter(2);
