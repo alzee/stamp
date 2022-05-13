@@ -228,6 +228,8 @@ class ApiController extends AbstractController
         $device = $this->doctrine->getRepository(Device::class)->find(2);
         $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByDeviceAndUsername($device, 'BaYue');
         dump($fpr);
+        $token = $this->getStampTokenFromCache($device->getUuid());
+        dump($token);
         return new Response('<body></body>');
     }
 }
