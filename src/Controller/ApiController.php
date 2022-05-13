@@ -135,6 +135,14 @@ class ApiController extends AbstractController
                 $stamp->setSleepTime(30);
                 break;
             case 1010:  // fingerprint added
+                $cache = new FilesystemAdapter();
+                if ($cache->getItem("STAMP_${uuid}_JUST_CALLED")->isHit()) break;
+
+                $cache->get("STAMP_${uuid}_JUST_CALLED", function (ItemInterface $item){
+                    $item->expiresAfter(2);
+                    return true;
+                });
+
                 $uid = $data->data->userId;
                 $fpr = $this->doctrine->getRepository(Fingerprint::class)->find($uid);
                 if (is_null($fpr)) break;

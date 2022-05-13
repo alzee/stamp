@@ -16,6 +16,8 @@ use App\Entity\Organization;
 use App\Entity\Wecom;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 #[AsCommand(
     name: 'fuck',
@@ -55,6 +57,23 @@ class FuckCommand extends Command
         // if ($input->getOption('option1')) {
         //     // ...
         // }
+
+        $cache = new FilesystemAdapter();
+
+        $cache->get('word', function (ItemInterface $item) {
+            $item->expiresAfter(2);
+            return true;
+        });
+
+        // sleep(2);
+
+        $i = $cache->getItem('word');
+        if ($i->isHit()) {
+            echo 'yes';
+        } else {
+            echo 'no';
+        }
+        dump($i);
 
         $io->success($org->getId() . ' ' . $org->getName());
 
