@@ -1,4 +1,5 @@
 todo:
   - device->findOneByOrg() what if a organization have more than one device?
+  - table device add column oa
 
 # vim:ft=yaml
