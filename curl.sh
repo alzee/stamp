@@ -8,8 +8,8 @@ uid=1
 uname=u1
 
 api=auth/tToken
-# curl -d key=$stamp_app_key -d secret=$stamp_app_secret "$QSTAMP_API_URL/$api"
-# curl "$QSTAMP_API_URL/$api?key=$stamp_app_key&secret=$stamp_app_secret"
+# curl -d key=$STAMP_APP_KEY -d secret=$STAMP_APP_SECRET "$QSTAMP_API_URL/$api"
+# curl "$QSTAMP_API_URL/$api?key=$STAMP_APP_KEY&secret=$STAMP_APP_SECRET"
 
 api=device/list
 # curl -H "tToken: $stamp_token" "$QSTAMP_API_URL/$api"
