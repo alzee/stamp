@@ -155,7 +155,7 @@ class ApiController extends AbstractController
                 }
                 break;
             case 1130:  // img uploaded
-                if (is_null($data->data->applicationId)) break;
+                if (isset($data->data->applicationId)) break;
                 // Upload to wecom
                 $path = $_ENV['IMG_DIR_PREFIX'] . preg_replace('/\/group\d+/', '', $data->data->path);
                 $media = new Media($this->getWecomTokenFromCache($corpId, 'approval'));
