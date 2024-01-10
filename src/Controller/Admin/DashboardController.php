@@ -11,6 +11,7 @@ use App\Entity\Fingerprint;
 use App\Entity\Organization;
 use App\Entity\Device;
 use App\Entity\Wecom;
+use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class DashboardController extends AbstractDashboardController
@@ -39,5 +40,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Organization', 'fas fa-list', Organization::class);
         yield MenuItem::linkToCrud('Device', 'fas fa-list', Device::class);
         yield MenuItem::linkToCrud('Wecom', 'fas fa-list', Wecom::class);
+        yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);
     }
 }
