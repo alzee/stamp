@@ -46,11 +46,18 @@ class MsgCommand extends Command
         $token = $fwc->getAccessToken($corpId, $secret);
         dump($token);
         
+        $media = new Media($token);
+        $path = '1.png';
+        $resp = $media->upload($path, 'image');
+        dump($resp);
+        
         $msg = new Message($token);
-        $content = 'hi';
+        $content = 'hi you';
         $agentId = '1000005';
         // $agentId = '3010040';
-        $data = $msg->sendTextTo("HouFei", $content, $agentId);
+        $mediaId = $resp->media_id;
+        // $data = $msg->sendTextTo("HouFei", $content, $agentId);
+        $data = $msg->sendImgTo("HouFei", $mediaId, $agentId);
         dump($data);
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
