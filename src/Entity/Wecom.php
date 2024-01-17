@@ -37,6 +37,12 @@ class Wecom
     #[ORM\OneToOne(inversedBy: 'wecom', targetEntity: Organization::class, cascade: ['persist', 'remove'])]
     private $org;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $appid = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $appsecret = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -134,6 +140,30 @@ class Wecom
     public function setOrg(?Organization $org): self
     {
         $this->org = $org;
+
+        return $this;
+    }
+
+    public function getAppid(): ?string
+    {
+        return $this->appid;
+    }
+
+    public function setAppid(?string $appid): static
+    {
+        $this->appid = $appid;
+
+        return $this;
+    }
+
+    public function getAppsecret(): ?string
+    {
+        return $this->appsecret;
+    }
+
+    public function setAppsecret(?string $appsecret): static
+    {
+        $this->appsecret = $appsecret;
 
         return $this;
     }
