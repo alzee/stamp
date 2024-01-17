@@ -136,9 +136,9 @@ class ApiController extends AbstractController
                 break;
             case 1010:  // fingerprint added
                 $cache = new RedisAdapter(RedisAdapter::createConnection('redis://localhost'));
-                if ($cache->getItem("STAMP_${uuid}_JUST_CALLED")->isHit()) break;
+                if ($cache->getItem("STAMP_{$uuid}_JUST_CALLED")->isHit()) break;
 
-                $cache->get("STAMP_${uuid}_JUST_CALLED", function (ItemInterface $item){
+                $cache->get("STAMP_{$uuid}_JUST_CALLED", function (ItemInterface $item){
                     $item->expiresAfter(2);
                     return true;
                 });
@@ -159,7 +159,7 @@ class ApiController extends AbstractController
                 if (!isset($data->data->applicationId)) break;
                 // Upload to wecom
                 $path = $_ENV['IMG_DIR_PREFIX'] . preg_replace('/\/group\d+/', '', $data->data->path);
-                $media = new Media($this->getWecomTokenFromCache($corpId, 'approval'));
+                $media = new Media($this->getWecomTokenFromCache($corpId, 'app'));
                 $mediaId = $media->upload($path, 'image')->media_id;
 
                 // Send images message to wecom chat
@@ -188,10 +188,10 @@ class ApiController extends AbstractController
         $cache = new RedisAdapter(RedisAdapter::createConnection('redis://localhost'));
 
         if ($refresh) {
-            $cache->clear("WECOM_${corpId}_${app}_TOKEN");
+            $cache->clear("WECOM_{$corpId}_{$app}_TOKEN");
         }
 
-        $token = $cache->get("WECOM_${corpId}_${app}_TOKEN", function (ItemInterface $item) use ($corpId, $app) {
+        $token = $cache->get("WECOM_{$corpId}_{$app}_TOKEN", function (ItemInterface $item) use ($corpId, $app) {
             $item->expiresAfter(7200);
             $wecom = $this->doctrine->getRepository(Wecom::class)->findOneByCorpId($corpId);
             $fwc = new Fwc();
@@ -211,10 +211,10 @@ class ApiController extends AbstractController
         $cache = new RedisAdapter(RedisAdapter::createConnection('redis://localhost'));
 
         if ($refresh) {
-            $cache->clear("STAMP_${uuid}_TOKEN");
+            $cache->clear("STAMP_{$uuid}_TOKEN");
         }
 
-        $token = $cache->get("STAMP_${uuid}_TOKEN", function (ItemInterface $item) use ($uuid) {
+        $token = $cache->get("STAMP_{$uuid}_TOKEN", function (ItemInterface $item) use ($uuid) {
             $item->expiresAfter(7200);
 
             $stamp = new Qstamp($uuid);
