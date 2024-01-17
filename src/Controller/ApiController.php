@@ -69,7 +69,7 @@ class ApiController extends AbstractController
                 // dump($data);
 
                 $contacts = new Contacts($this->getWecomTokenFromCache($corpId, 'contacts'));
-                $approval = new Approval($this->getWecomTokenFromCache($corpId, 'approval'));
+                $approval = new Approval($this->getWecomTokenFromCache($corpId, 'app'));
 
                 $device = $this->doctrine->getRepository(Device::class)->findOneByOrg($wecom->getOrg());
 
@@ -163,13 +163,14 @@ class ApiController extends AbstractController
                 $mediaId = $media->upload($path, 'image')->media_id;
 
                 // Send images message to wecom chat
-                $approval = new Approval($this->getWecomTokenFromCache($corpId, 'approval'));
+                $approval = new Approval($this->getWecomTokenFromCache($corpId, 'app'));
                 $spNo = $stamp->applicationIdToWecom($data->data->applicationId);
                 $applicant = $approval->getApplicant($spNo);
                 $approver = $approval->getApprovers($spNo);
-                $msg = new Message($this->getWecomTokenFromCache($corpId, 'approval'));
+                $msg = new Message($this->getWecomTokenFromCache($corpId, 'app'));
+                $agentId = $wecom->getAppid();
                 // $data = $msg->sendTextTo("$applicant|$approver", "test", '3010040');
-                $data = $msg->sendImgTo("$applicant|$approver", $mediaId, '3010040');
+                $data = $msg->sendImgTo("$applicant|$approver", $mediaId, $agentId);
                 break;
         }
         return $this->json(["code" => 0, "msg" => '', "data" => ""]);
@@ -197,6 +198,7 @@ class ApiController extends AbstractController
             $secret = match ($app) {
                 'contacts' => $wecom->getContactsSecret(),
                 'approval' => $wecom->getApprovalSecret(),
+                'app' => $wecom->getAppsecret(),
             };
             return $fwc->getAccessToken($corpId, $secret);
         });
