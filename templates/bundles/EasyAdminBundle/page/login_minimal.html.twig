@@ -23,7 +23,9 @@
     <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}">
         {% block wrapper_wrapper %}{% endblock wrapper_wrapper %}
         <footer style="position: absolute; bottom: 3rem">
-        {% block footer %}{% endblock footer %}
+        {% block footer %}
+        {{ include('footer.html.twig', ignore_missing = true) }}
+        {% endblock footer %}
         </footer>
     </body>
 </html>
