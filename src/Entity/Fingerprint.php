@@ -25,6 +25,14 @@ class Fingerprint
     #[ORM\ManyToOne(targetEntity: Device::class, inversedBy: 'fingerprints')]
     private $device;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
+    
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +82,18 @@ class Fingerprint
     public function setDevice(?Device $device): self
     {
         $this->device = $device;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
