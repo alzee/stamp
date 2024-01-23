@@ -96,6 +96,14 @@ class ApiController extends AbstractController
                             break;
                         case $wecom->getAddingFprTemplateId():
                             if (is_null($fpr)) {
+                                $cache = new RedisAdapter(RedisAdapter::createConnection('redis://localhost'));
+                                if ($cache->getItem("STAMP_ADDING_FPR_{$username}")->isHit()) break;
+
+                                $cache->get("STAMP_ADDING_FPR_{$username}", function (ItemInterface $item){
+                                    $item->expiresAfter(2);
+                                    return true;
+                                });
+                                
                                 $em = $this->doctrine->getManager();
                                 $fpr = new Fingerprint();
                                 $fpr->setUsername($username);
