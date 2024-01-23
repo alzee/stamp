@@ -21,15 +21,18 @@ use App\Entity\Device;
 use App\Entity\Fingerprint;
 use App\Entity\Organization;
 use App\Entity\Wecom;
+use Psr\Log\LoggerInterface;
 
 #[Route('/api')]
 class ApiController extends AbstractController
 {
     private $doctrine;
+    private $logger;
 
-    public function __construct(ManagerRegistry $doctrine)
+    public function __construct(ManagerRegistry $doctrine, LoggerInterface $logger)
     {
         $this->doctrine = $doctrine;
+        $this->logger = $logger;
     }
 
     #[Route('/', name: 'app_api')]
@@ -81,6 +84,14 @@ class ApiController extends AbstractController
                     $spNo = (string)$data->ApprovalInfo->SpNo;
                     switch ((string)$data->ApprovalInfo->TemplateId) {
                         case $wecom->getStampingTemplateId():
+                            if (is_null($fpr)){
+                                $this->logger->error('fingerprint not found -- device: {device}, username: {username}',
+                                    [
+                                        'device' => $device,
+                                        'username' => $username,
+                                    ]
+                                );
+                            }
                             $stamp->pushApplication($stamp->applicationIdFromWecom($spNo), $fpr->getId(), $approval->getFieldValue($spNo, '用章次数'));
                             break;
                         case $wecom->getAddingFprTemplateId():
@@ -229,7 +240,16 @@ class ApiController extends AbstractController
     #[Route('/test')]
     public function test(Request $request){
         $device = $this->doctrine->getRepository(Device::class)->find(2);
-        $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByDeviceAndUsername($device, 'BaYue');
+        $username = 'Bayue1';
+        $fpr = $this->doctrine->getRepository(Fingerprint::class)->findOneByDeviceAndUsername($device, $username);
+        if (is_null($fpr)){
+            $this->logger->error('fingerprint not found -- device: {device}, username: {username}',
+                [
+                    'device' => $device,
+                    'username' => $username,
+                ]
+            );
+        }
         dump($fpr);
         return new Response('<body></body>');
     }
