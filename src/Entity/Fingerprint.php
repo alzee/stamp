@@ -4,8 +4,12 @@ namespace App\Entity;
 
 use App\Repository\FingerprintRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: FingerprintRepository::class)]
+#[UniqueEntity(
+    fields: ['username', 'device']
+)]
 class Fingerprint
 {
     #[ORM\Id]

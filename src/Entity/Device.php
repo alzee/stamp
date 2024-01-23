@@ -34,6 +34,11 @@ class Device
     {
         $this->fingerprints = new ArrayCollection();
     }
+    
+    public function __toString()
+    {
+        return $this->id;
+    }
 
     public function getId(): ?int
     {
